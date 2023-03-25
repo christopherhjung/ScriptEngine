@@ -2,6 +2,7 @@ package com.siiam.compiler.parser.ast;
 
 import com.siiam.compiler.exception.InterpreterException;
 import com.siiam.compiler.parser.controlflow.ReturnException;
+import com.siiam.compiler.scope.NestedScope;
 import com.siiam.compiler.scope.Scope;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class LambdaExpr implements Expr{
         }
 
         var idx = 0;
+        scope = NestedScope.wrapMutual(scope);
         for(var param : params){
             param.assign(scope, args[idx++]);
         }

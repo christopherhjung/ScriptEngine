@@ -19,10 +19,7 @@ public class CallExpr implements Expr{
         var calleeVal = callee.eval(scope);
 
         if(calleeVal == null){
-            if(optional){
-                return null;
-            }
-
+            if(optional) return null;
             throw new InterpreterException("Null pointer exception");
         }
 
