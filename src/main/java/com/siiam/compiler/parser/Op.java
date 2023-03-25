@@ -13,6 +13,7 @@ public enum Op{
     Dot, Chain,
     Inc, Dec,
     Nullish, Pow,
+    Spread,
     LeftParen;
 
     public Prec prec(){
@@ -29,11 +30,12 @@ public enum Op{
             case Div: return Prec.Mul;
             case And: return Prec.And;
             case Or: return Prec.Or;
-            case Not: return Prec.Unary;
             case Assign: return Prec.Assign;
             case BitAnd: return Prec.BitAnd;
             case BitOr: return Prec.BitOr;
             case BitXor: return Prec.BitXor;
+            case Spread:
+            case Not: return Prec.Unary;
             default: return Prec.Bottom;
         }
     }
@@ -68,7 +70,8 @@ public enum Op{
         switch (this){
             case Add:
             case Sub:
-            case Not: return true;
+            case Not:
+            case Spread: return true;
             default: return false;
         }
     }

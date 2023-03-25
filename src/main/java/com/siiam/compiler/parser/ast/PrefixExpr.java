@@ -5,6 +5,8 @@ import com.siiam.compiler.parser.Op;
 import com.siiam.compiler.scope.Scope;
 import lombok.AllArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 public class PrefixExpr implements Expr{
     private Expr expr;
@@ -29,5 +31,14 @@ public class PrefixExpr implements Expr{
         }
 
         throw new InterpreterException("Not implemented " + op + " operation!");
+    }
+
+    @Override
+    public void collect(Scope scope, List<Object> list) {
+        if(op == Op.Spread){
+            expr.spread(scope, list);
+        }else{
+            Expr.super.collect(scope, list);
+        }
     }
 }

@@ -3,10 +3,13 @@ package com.siiam.compiler;
 import com.siiam.compiler.parser.Op;
 import com.siiam.compiler.parser.Parser;
 import com.siiam.compiler.parser.ast.*;
+import com.siiam.compiler.scope.MutualScope;
 import com.siiam.compiler.scope.StaticScope;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -281,6 +284,30 @@ public class SimpleParserTest {
                 "3 ^ 1"
         );
         assertEquals( 2, actualExpr.eval(null));
+    }
+
+    @Test
+    public void spread(){
+        var parser = Parser.parse("(1, ...(2,3,4),5)");
+        var arr  = (Object[])parser.eval(new MutualScope(new HashMap<>()));
+        System.out.println(Arrays.deepToString(arr));
+        assertArrayEquals(new Object[]{1,2,3,4,5},  arr);
+    }
+
+    @Test
+    public void spreadVariable(){
+        var parser = Parser.parse("a = (2,3,4); (1, ...a,5)");
+        var arr  = (Object[])parser.eval(new MutualScope(new HashMap<>()));
+        System.out.println(Arrays.deepToString(arr));
+        assertArrayEquals(new Object[]{1,2,3,4,5},  arr);
+    }
+
+    @Test
+    public void spreadNested(){
+        var parser = Parser.parse("(1, ...(2,...(3,4,5),6),7)");
+        var arr  = (Object[])parser.eval(new MutualScope(new HashMap<>()));
+        System.out.println(Arrays.deepToString(arr));
+        assertArrayEquals(new Object[]{1,2,3,4,5,6,7},  arr);
     }
 
     private Expr id(String name){

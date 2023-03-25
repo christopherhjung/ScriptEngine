@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ParserTest {
     public String load(String fileName){
@@ -27,6 +27,8 @@ public class ParserTest {
     @Test
     public void run(){
         var parser = Parser.parse(load("file.siiam"));
-        assertEquals(55, parser.eval(new MutualScope(new HashMap<>())));
+        var arr  = (Object[])parser.eval(new MutualScope(new HashMap<>()));
+        System.out.println(Arrays.deepToString(arr));
+        assertArrayEquals(new Object[]{1,2},  arr);
     }
 }

@@ -37,6 +37,17 @@ public class Lexer {
         return idx >= chars.length;
     }
 
+    public int ahead(int offset){
+        if(idx + offset + 1 >= chars.length){
+            return -1;
+        }
+        return chars[idx];
+    }
+
+    public boolean is(int cha, int offset){
+        return ahead(offset) == cha;
+    }
+
     public boolean accept(int cha){
         if(curr() == cha){
             idx++;
@@ -97,7 +108,7 @@ public class Lexer {
         while(!isEOL()){
             enter = Token.Enter.Token;
             while(true){
-                if(accept(' ') || accept('\n')){
+                if(accept(' ') || accept('\t')){
                     if(enter == Token.Enter.Token){
                         enter = Token.Enter.Space;
                     }
@@ -248,6 +259,11 @@ public class Lexer {
             }
 
             if(accept('.')){
+                if(is('.', 1) && is('.', 2)){
+                    idx+=2;
+                    return token(Token.Kind.Ellipsis);
+                }
+
                 return token(Token.Kind.Dot);
             }
 

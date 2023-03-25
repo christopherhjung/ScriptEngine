@@ -19,10 +19,7 @@ public class FieldExpr implements Expr{
         var value = expr.eval(scope);
 
         if(value == null){
-            if(optional){
-                return null;
-            }
-
+            if(optional) return null;
             throw new InterpreterException("Null pointer exception");
         }
 
@@ -46,10 +43,7 @@ public class FieldExpr implements Expr{
         var value = expr.eval(scope);
 
         if(value == null){
-            if(optional){
-                return null;
-            }
-
+            if(optional) return null;
             throw new InterpreterException("Null pointer exception");
         }
 

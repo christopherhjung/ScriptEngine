@@ -24,7 +24,7 @@ public class Token {
         Dot, Comma, Semi, Colon,
         Fn, If, While, Else, Break, Continue, Return,
         Quest, Nullish, Chain, Pow,
-        Arrow,
+        Arrow, Let, Ellipsis,
         EOL, Error
     }
 

@@ -122,14 +122,16 @@ public class Parser {
         return null;
     }
 
-
     private Expr parseImpl(){
         var functions = new ArrayList<FunctionExpr>();
         var exprs = new ArrayList<Expr>();
         while(!accept(Token.Kind.EOL)){
             switch (peek().getKind()){
                 case Fn: functions.add(parseFunction());
-                default: exprs.add(parseExpr());
+                //case Let: exprs.add(parseDecl());
+                default:
+                    exprs.add(parseExpr());
+                    accept(Token.Kind.Semi);
             }
         }
 
@@ -141,7 +143,6 @@ public class Parser {
             for( var function : functions ){
                 scopeBuilder.add(function.getName(), function);
             }
-
             return new ScopedExpr(scopeBuilder.build(), expr);
         }
     }
@@ -309,9 +310,9 @@ public class Parser {
         var prefixOp = parseOp();
         var lhs = prefixOp != null ? parsePrefixExpr(prefixOp) : parsePrimaryExpr();
 
-        while(true){
-            if(isEOL()){
-                return lhs;
+        while(!isEOL()){
+            if(enter(Token.Enter.NL) ){
+                break;
             }
 
             var op = parseOp();
@@ -378,6 +379,7 @@ public class Parser {
             case BitXor: return Op.BitXor;
             case Dec: return Op.Dec;
             case Inc: return Op.Inc;
+            case Ellipsis: return Op.Spread;
             default: return null;
         }
     }

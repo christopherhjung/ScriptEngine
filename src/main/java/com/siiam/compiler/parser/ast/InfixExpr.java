@@ -93,7 +93,6 @@ public class InfixExpr implements Expr{
 
     @Override
     public Object eval(Scope scope) {
-
         if (op == Op.Assign) {
             var rhsVal = rhs.eval(scope);
             return lhs.assign(scope, rhsVal);
