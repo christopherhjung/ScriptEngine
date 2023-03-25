@@ -7,6 +7,7 @@ public class Lexer {
     private final char[] chars;
     private int idx;
     private int mark = 0;
+    private Token.Enter enter;
 
     public Lexer(String code){
         this.chars = code.toCharArray();
@@ -84,117 +85,178 @@ public class Lexer {
         return new String(chars, mark, length);
     }
 
+    private Token token(Token.Kind kind){
+        return token(kind, null);
+    }
+    
+    private Token token(Token.Kind kind, String symbol){
+        return new Token(kind, enter, symbol);
+    }
+    
     public Token next(){
         while(!isEOL()){
-            if(accept(' ') || accept('\n') || accept('\r') || accept('\n')){
-                continue;
+            enter = Token.Enter.Token;
+            while(true){
+                if(accept(' ') || accept('\n')){
+                    if(enter == Token.Enter.Token){
+                        enter = Token.Enter.Space;
+                    }
+                }else if(accept('\n') || accept('\r')){
+                    enter = Token.Enter.NL;
+                }else{
+                    break;
+                }
             }
+
             if(accept('=')){
                 if(accept('=')){
-                    return new Token(Token.Kind.Eq, null);
+                    return token(Token.Kind.Eq);
                 }else{
-                    return new Token(Token.Kind.Assign, null);
+                    return token(Token.Kind.Assign);
                 }
             }
 
             if(accept('!')){
                 if(accept('=')){
-                    return new Token(Token.Kind.Ne, null);
+                    return token(Token.Kind.Ne);
                 }else{
-                    return new Token(Token.Kind.Not, null);
+                    return token(Token.Kind.Not);
                 }
             }
 
             if(accept('<')){
                 if(accept('=')){
-                    return new Token(Token.Kind.Le, null);
+                    return token(Token.Kind.Le);
                 }else{
-                    return new Token(Token.Kind.Lt, null);
+                    return token(Token.Kind.Lt);
                 }
             }
 
             if(accept('>')){
                 if(accept('=')){
-                    return new Token(Token.Kind.Ge, null);
+                    return token(Token.Kind.Ge);
                 }else{
-                    return new Token(Token.Kind.Gt, null);
+                    return token(Token.Kind.Gt);
                 }
             }
 
             if(accept('?')){
                 if(accept('?')){
-                    return new Token(Token.Kind.Nullish, null);
+                    return token(Token.Kind.Nullish);
                 }else if(accept('.')){
-                    return new Token(Token.Kind.Chain, null);
+                    return token(Token.Kind.Chain);
                 }else{
-                    return new Token(Token.Kind.Quest, null);
+                    return token(Token.Kind.Quest);
                 }
             }
 
             if(accept('&')){
-                return new Token(Token.Kind.BitAnd, null);
+                return token(Token.Kind.BitAnd);
             }
 
             if(accept('|')){
-                return new Token(Token.Kind.BitOr, null);
+                return token(Token.Kind.BitOr);
             }
 
             if(accept('^')){
-                return new Token(Token.Kind.BitXor, null);
+                return token(Token.Kind.BitXor);
             }
 
             if(accept('(')){
-                return new Token(Token.Kind.LeftParen, null);
+                return token(Token.Kind.LeftParen);
             }
 
             if(accept(')')){
-                return new Token(Token.Kind.RightParen, null);
+                return token(Token.Kind.RightParen);
             }
 
             if(accept('{')){
-                return new Token(Token.Kind.LeftBrace, null);
+                return token(Token.Kind.LeftBrace);
             }
 
             if(accept('}')){
-                return new Token(Token.Kind.RightBrace, null);
+                return token(Token.Kind.RightBrace);
             }
 
             if(accept('+')){
                 if(accept('+')){
-                    return new Token(Token.Kind.Inc, null);
+                    return token(Token.Kind.Inc);
                 }
-                return new Token(Token.Kind.Plus, null);
+                return token(Token.Kind.Plus);
             }
 
             if(accept('-')){
                 if(accept('-')){
-                    return new Token(Token.Kind.Dec, null);
+                    return token(Token.Kind.Dec);
+                }else if(accept('>')){
+                    return token(Token.Kind.Arrow);
                 }
-                return new Token(Token.Kind.Minus, null);
+                return token(Token.Kind.Minus);
             }
 
             if(accept('*')){
                 if(accept('*')){
-                    return new Token(Token.Kind.Pow, null);
+                    return token(Token.Kind.Pow);
                 }
 
-                return new Token(Token.Kind.Star, null);
+                return token(Token.Kind.Star);
             }
 
-            if(accept('/')){
-                return new Token(Token.Kind.Slash, null);
+
+            if( accept('/') ){
+                if(accept('*') ){ // arbitrary comment
+                    var depth = 1;
+                    while(true) {
+                        if(isEOL()){
+                            return token(Token.Kind.Error);
+                        }
+
+                        if(accept('/')){
+                            if(accept('*')){
+                                depth += 1;
+                            }
+                        } else if(accept('*')){
+                            if(accept('/')){
+                                depth -= 1;
+                                if(depth == 0 ){
+                                    break;
+                                }
+                            }
+
+                            continue;
+                        }
+
+                        next();
+                    }
+                    continue;
+                }
+                if(accept('/')) {
+                    while(true) {
+                        if(isEOL()){
+                            return token(Token.Kind.Error);
+                        }
+
+                        if(accept('\n')){
+                            break;
+                        } else {
+                            next();
+                        }
+                    }
+                    continue;
+                }
+                return token(Token.Kind.Slash);
             }
 
             if(accept('.')){
-                return new Token(Token.Kind.Dot, null);
+                return token(Token.Kind.Dot);
             }
 
             if(accept(',')){
-                return new Token(Token.Kind.Comma, null);
+                return token(Token.Kind.Comma);
             }
 
             if(accept(';')){
-                return new Token(Token.Kind.Semi, null);
+                return token(Token.Kind.Semi);
             }
 
             if(isNumeric()){
@@ -205,7 +267,7 @@ public class Lexer {
                     shift();
                 }
 
-                return new Token(Token.Kind.Number, getString());
+                return token(Token.Kind.Number, getString());
             }
 
             if(isAlpha()){
@@ -219,38 +281,42 @@ public class Lexer {
                 var value = getString();
                 switch (value) {
                     case "true":
-                    case "false": return new Token(Token.Kind.Boolean, value);
-                    case "fn": return new Token(Token.Kind.Fn, null);
-                    case "if": return new Token(Token.Kind.If, null);
-                    case "else": return new Token(Token.Kind.Else, null);
-                    case "break": return new Token(Token.Kind.Break, null);
-                    case "continue": return new Token(Token.Kind.Continue, null);
-                    case "while": return new Token(Token.Kind.While, null);
-                    case "return": return new Token(Token.Kind.Return, null);
-                    case "null": return new Token(Token.Kind.Null, null);
-                    case "and": return new Token(Token.Kind.And, null);
-                    case "or": return new Token(Token.Kind.Or, null);
+                    case "false": return token(Token.Kind.Boolean, value);
+                    case "fn": return token(Token.Kind.Fn);
+                    case "if": return token(Token.Kind.If);
+                    case "else": return token(Token.Kind.Else);
+                    case "break": return token(Token.Kind.Break);
+                    case "continue": return token(Token.Kind.Continue);
+                    case "while": return token(Token.Kind.While);
+                    case "return": return token(Token.Kind.Return);
+                    case "null": return token(Token.Kind.Null);
+                    case "and": return token(Token.Kind.And);
+                    case "or": return token(Token.Kind.Or);
                 }
 
-                return new Token(Token.Kind.Ident, value);
+                return token(Token.Kind.Ident, value);
             }
 
             if(accept('\"')){
                 mark();
                 while(!accept('\"')){
                     if(isEOL()){
-                        return new Token(Token.Kind.Error, null);
+                        return token(Token.Kind.Error);
                     }
                     shift();
                 }
 
-                return new Token(Token.Kind.String, getString(idx - mark - 1 ));
+                return token(Token.Kind.String, getString(idx - mark - 1 ));
             }
 
-            return new Token(Token.Kind.Error, null);
+            if(isEOL()){
+                return token(Token.Kind.EOL);
+            }
+
+            return token(Token.Kind.Error);
         }
 
-        return new Token(Token.Kind.EOL, null);
+        return token(Token.Kind.EOL);
     }
 }
 

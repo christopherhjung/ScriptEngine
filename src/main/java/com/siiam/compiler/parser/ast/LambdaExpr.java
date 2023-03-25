@@ -1,16 +1,14 @@
 package com.siiam.compiler.parser.ast;
 
 import com.siiam.compiler.exception.InterpreterException;
-import com.siiam.compiler.scope.NestedScope;
-import com.siiam.compiler.scope.Scope;
 import com.siiam.compiler.parser.controlflow.ReturnException;
+import com.siiam.compiler.scope.Scope;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class FunctionExpr implements Expr{
-    private String name;
+public class LambdaExpr implements Expr{
     private Expr[] params;
     private Expr body;
 
@@ -20,8 +18,6 @@ public class FunctionExpr implements Expr{
             throw new InterpreterException("Mismatch arg length");
         }
 
-        scope = NestedScope.wrapReadonly(scope);
-        scope = NestedScope.wrapMutual(scope);
         var idx = 0;
         for(var param : params){
             param.assign(scope, args[idx++]);

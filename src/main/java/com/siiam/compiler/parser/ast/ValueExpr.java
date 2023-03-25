@@ -1,23 +1,21 @@
 package com.siiam.compiler.parser.ast;
 
-import com.siiam.compiler.exception.InterpreterException;
 import com.siiam.compiler.scope.Scope;
+import com.siiam.compiler.scope.Value;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class IdentExpr implements Expr{
-    private final String key;
+public class ValueExpr implements Expr{
+    private final Value value;
 
     @Override
     public Object eval(Scope scope) {
-        return scope.getObject(key);
+        return value.getContent();
     }
 
     @Override
     public Object assign(Scope scope, Object obj) {
-        if(!scope.setObject(key, obj)){
-            throw new InterpreterException("Assign was not successful");
-        }
+        value.setContent(obj);
         return obj;
     }
 }

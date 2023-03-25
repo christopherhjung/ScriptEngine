@@ -1,12 +1,11 @@
 package com.siiam.compiler.parser;
 
-
 import com.siiam.compiler.exception.LexerException;
 import com.siiam.compiler.exception.ParseException;
 import com.siiam.compiler.lexer.Lexer;
 import com.siiam.compiler.lexer.Token;
 import com.siiam.compiler.parser.ast.*;
-import compiler.parser.ast.*;
+import com.siiam.compiler.scope.StaticScope;
 
 import java.util.ArrayList;
 
@@ -40,7 +39,7 @@ public class Parser {
         return lookahead[currIdx];
     }
 
-    private Token lookahead(int idx){
+    private Token ahead(int idx){
         if(idx > LOOKAHEAD_SIZE){
             throw new ParseException("Out of Lookahead buffer");
         }
@@ -79,6 +78,24 @@ public class Parser {
         return curr;
     }
 
+    private boolean enter(Token.Enter enter){
+        return peek().getEnter() == enter;
+    }
+
+    private void expectEnter(Token.Enter enter){
+        if(!enter(enter)){
+            throw new ParseException("Expected enter " + enter);
+        }
+    }
+
+    private boolean follow(Token.Kind kind){
+        if(enter(Token.Enter.Token)){
+            return accept(kind);
+        }
+
+        return false;
+    }
+
     private boolean isEOL(){
         return peek().getKind() == Token.Kind.EOL;
     }
@@ -105,6 +122,7 @@ public class Parser {
         return null;
     }
 
+
     private Expr parseImpl(){
         var functions = new ArrayList<FunctionExpr>();
         var exprs = new ArrayList<Expr>();
@@ -115,35 +133,46 @@ public class Parser {
             }
         }
 
-        var functionArr = functions.toArray(new FunctionExpr[0]);
-        var expr = exprs.toArray(new Expr[0]);
+        var expr = new BlockExpr(exprs.toArray(new Expr[0]));
+        if(functions.isEmpty()){
+            return expr;
+        }else{
+            var scopeBuilder = StaticScope.builder();
+            for( var function : functions ){
+                scopeBuilder.add(function.getName(), function);
+            }
 
-        return new ProgramExpr(functionArr, new BlockExpr(expr));
+            return new ScopedExpr(scopeBuilder.build(), expr);
+        }
     }
 
     private FunctionExpr parseFunction(){
         expect(Token.Kind.Fn);
         var name = parseIdent(true);
         expect(Token.Kind.LeftParen);
-        var params = new ArrayList<String>();
+        var params = new ArrayList<Expr>();
         while(!accept(Token.Kind.RightParen)){
             if(!params.isEmpty()){
                 expect(Token.Kind.Comma);
             }
             var param = parseIdent(true);
-            params.add(param);
+            params.add(new IdentExpr(param));
         }
 
         var body = parseBlock();
-        var paramArr = params.toArray(new String[0]);
+        var paramArr = params.toArray(new Expr[0]);
         return new FunctionExpr(name, paramArr, body);
     }
 
     private Expr parsePrefixExpr(Op op){
         if( op == Op.LeftParen ){
-            var expr = parseExpr();
-            expect(Token.Kind.RightParen);
-            return expr;
+            var tuple = parseTuple();
+            if(!accept(Token.Kind.Arrow)){
+                return tuple;
+            }
+
+            var body = parseExpr();
+            return new LambdaExpr(tuple.getElems(), body);
         }else{
             var expr = parseExpr(op.prec().next());
             return new PrefixExpr(expr, op);
@@ -169,7 +198,7 @@ public class Parser {
 
     private TupleExpr parseTuple(){
         var exprs = new ArrayList<Expr>();
-        while(!is(Token.Kind.RightParen)){
+        while(!accept(Token.Kind.RightParen)){
             if(!exprs.isEmpty()){
                 expect(Token.Kind.Comma);
             }
@@ -221,7 +250,6 @@ public class Parser {
         switch (op){
             case LeftParen:
                 var arg = parseTuple();
-                expect(Token.Kind.RightParen);
                 return new CallExpr(lhs, arg);
             case Inc: return new InfixExpr(lhs, new InfixExpr(lhs, new IntExpr(1), Op.Add), Op.Assign);
             case Dec: return new InfixExpr(lhs, new InfixExpr(lhs, new IntExpr(1), Op.Sub), Op.Assign);

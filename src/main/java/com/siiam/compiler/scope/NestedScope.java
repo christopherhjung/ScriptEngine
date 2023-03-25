@@ -42,6 +42,21 @@ public class NestedScope implements Scope {
         return child;
     }
 
+    public static Scope nest(Scope parent, Scope child){
+        if(parent != null){
+            if(child != null){
+                return new NestedScope(parent, child);
+            }
+
+            return parent;
+        }
+
+        return child;
+    }
+
+
+
+
     public static Scope wrapReadonly(Scope scope){
         return new ReadonlyScope(scope);
     }

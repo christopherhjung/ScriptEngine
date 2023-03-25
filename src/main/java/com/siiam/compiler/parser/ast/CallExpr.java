@@ -1,14 +1,10 @@
 package com.siiam.compiler.parser.ast;
 
 import com.siiam.compiler.exception.InterpreterException;
-import com.siiam.compiler.scope.NestedScope;
 import com.siiam.compiler.scope.Scope;
-import com.siiam.compiler.scope.Value;
 import com.siiam.compiler.parser.ObjectFunction;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-
-import java.util.HashMap;
 
 
 @AllArgsConstructor
@@ -32,17 +28,9 @@ public class CallExpr implements Expr{
 
         var argVal = (Object[])arg.eval(scope);
 
-        if(calleeVal instanceof FunctionExpr){
-            var function = (FunctionExpr) calleeVal;
-            var map = new HashMap<String, Value>();
-            var idx = 0;
-            for( String param : function.getParams() ){
-                map.put(param, new Value(argVal[idx++]));
-            }
-
-            scope = NestedScope.wrapReadonly(scope);
-            scope = NestedScope.wrapMutual(scope, map);
-            return function.eval(scope);
+        if(calleeVal instanceof Expr){
+            var expr = (Expr) calleeVal;
+            return expr.call(scope, argVal);
         }
 
         if(calleeVal instanceof ObjectFunction){

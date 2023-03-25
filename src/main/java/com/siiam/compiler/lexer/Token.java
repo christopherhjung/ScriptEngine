@@ -1,6 +1,5 @@
 package com.siiam.compiler.lexer;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,6 +7,7 @@ import lombok.Getter;
 @Getter
 public class Token {
     private Kind kind;
+    private Enter enter;
     private String symbol;
 
     public enum Kind{
@@ -24,6 +24,11 @@ public class Token {
         Dot, Comma, Semi, Colon,
         Fn, If, While, Else, Break, Continue, Return,
         Quest, Nullish, Chain, Pow,
+        Arrow,
         EOL, Error
+    }
+
+    public enum Enter{
+        Token, Space, NL
     }
 }
