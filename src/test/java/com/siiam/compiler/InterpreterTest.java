@@ -124,8 +124,8 @@ public class InterpreterTest {
     @Test
     public void controlFlowFibonacci(){
         var actualExpr = Parser.parse(
-                "fn fib(a){if(a <= 2){1}else{fib(a-1) + fib(a-2)}}" +
-                        "fib(10)"
+            "fn fib(a){if(a <= 2){1}else{fib(a-1) + fib(a-2)}}" +
+                    "fib(10)"
         );
         assertEquals(55, actualExpr.eval(null));
     }
@@ -262,6 +262,18 @@ public class InterpreterTest {
             var expr = Parser.parse("let (1,) = (10,)");
             expr.eval(null);
         });
+    }
+
+    @Test
+    public void breakForLoop(){
+        var expr = Parser.parse("let a = 0; for(i in 42..100){ a = i; break }; a");
+        assertEquals(42 ,expr.eval(null));
+    }
+
+    @Test
+    public void breakWhileLoop(){
+        var expr = Parser.parse("let a = 41; while(a < 100){ a++; break }; a");
+        assertEquals(42 ,expr.eval(null));
     }
 
     private void assertIdentical(Object expected, Object actual){

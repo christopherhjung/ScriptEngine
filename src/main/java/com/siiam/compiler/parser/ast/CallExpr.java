@@ -16,26 +16,8 @@ public class CallExpr implements Expr{
 
     @Override
     public Object eval(Scope scope) {
-        var calleeVal = callee.eval(scope);
-
-        if(calleeVal == null){
-            if(optional) return null;
-            throw new InterpreterException("Null pointer exception");
-        }
-
         var argVal = (Object[])arg.eval(scope);
-
-        if(calleeVal instanceof Expr){
-            var expr = (Expr) calleeVal;
-            return expr.call(scope, argVal);
-        }
-
-        if(calleeVal instanceof ObjectFunction){
-            var fn = (ObjectFunction) calleeVal;
-            return fn.call(argVal);
-        }
-
-        throw new InterpreterException("Expected Object Function Callee");
+        return callee.call(scope, argVal, optional);
     }
 }
 
