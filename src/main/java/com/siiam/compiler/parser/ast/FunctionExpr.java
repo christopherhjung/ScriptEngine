@@ -1,6 +1,5 @@
 package com.siiam.compiler.parser.ast;
 
-import com.siiam.compiler.exception.InterpreterException;
 import com.siiam.compiler.parser.controlflow.ReturnException;
 import com.siiam.compiler.scope.NestedScope;
 import com.siiam.compiler.scope.Scope;
@@ -33,9 +32,9 @@ public class FunctionExpr implements Expr{
     }
 
     @Override
-    public Expr reduce(Scope scope) {
-        var newParams = params.bind(scope);
-        var newBody = body.reduce(scope);
+    public Expr bind(Scope scope, boolean define) {
+        var newParams = params.bind(scope, true);
+        var newBody = body.bind(scope, false);
         return new FunctionExpr(name, newParams, newBody);
     }
 }

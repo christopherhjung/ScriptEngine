@@ -50,11 +50,7 @@ public interface Expr {
         return Boolean.TRUE.equals(eval(scope));
     }
 
-    default Expr reduce(Scope scope){
+    default Expr bind(Scope scope, boolean define){
         return this;
-    }
-
-    default Expr bind(Scope scope){
-        throw new InterpreterException("Bind not implemented for " + getClass().getSimpleName());
     }
 }

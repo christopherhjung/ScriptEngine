@@ -22,8 +22,8 @@ public class LetExpr implements Expr{
     }
 
     @Override
-    public Expr reduce(Scope scope) {
-        var newInit = init == null ? null : init.reduce(scope);
-        return new InfixExpr(ptrn.bind(scope), newInit, Op.Assign);
+    public Expr bind(Scope scope, boolean define) {
+        var newInit = init == null ? null : init.bind(scope, false);
+        return new InfixExpr(ptrn.bind(scope, true), newInit, Op.Assign);
     }
 }

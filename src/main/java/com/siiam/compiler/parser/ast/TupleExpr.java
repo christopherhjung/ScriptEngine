@@ -49,11 +49,11 @@ public class TupleExpr implements Expr{
     }
 
     @Override
-    public Expr bind(Scope scope) {
+    public Expr bind(Scope scope, boolean define) {
         var newElems = new Expr[elems.length];
         var idx = 0;
         for(var elem : elems){
-            newElems[idx++] = elem.bind(scope);
+            newElems[idx++] = elem.bind(scope, define);
         }
 
         return new TupleExpr(newElems);

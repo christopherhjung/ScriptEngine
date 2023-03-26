@@ -21,10 +21,10 @@ public class IfExpr implements Expr{
     }
 
     @Override
-    public Expr reduce(Scope scope) {
-        var newCondition = condition.reduce(scope);
-        var newTrueBranch = trueBranch.reduce(scope);
-        var newFalseBranch = falseBranch == null ? null : falseBranch.reduce(scope);
+    public Expr bind(Scope scope, boolean define) {
+        var newCondition = condition.bind(scope, false);
+        var newTrueBranch = trueBranch.bind(scope, false);
+        var newFalseBranch = falseBranch == null ? null : falseBranch.bind(scope,false);
 
         if(newCondition instanceof LiteralExpr){
             if(newCondition.evalBoolean(null)){

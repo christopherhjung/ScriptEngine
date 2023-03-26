@@ -25,8 +25,8 @@ public class ScopedExpr implements Expr{
     }
 
     @Override
-    public Expr reduce(Scope scope) {
-        var newExpr = expr.reduce(scope);
+    public Expr bind(Scope scope, boolean define) {
+        var newExpr = expr.bind(scope, false);
         return new ScopedExpr(this.scope, newExpr);
     }
 }

@@ -37,9 +37,9 @@ public class WhileExpr implements Expr{
     }
 
     @Override
-    public Expr reduce(Scope scope) {
-        var newCondition = condition.reduce(scope);
-        var newBody = body.reduce(scope);
+    public Expr bind(Scope scope, boolean define) {
+        var newCondition = condition.bind(scope, false);
+        var newBody = body.bind(scope, false);
         return new WhileExpr(newCondition, newBody, label);
     }
 }

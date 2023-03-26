@@ -21,10 +21,10 @@ public class BlockExpr implements Expr{
     }
 
     @Override
-    public Expr reduce(Scope scope) {
+    public Expr bind(Scope scope, boolean define) {
         var newExprs = new Expr[exprs.length];
         for( var idx = 0; idx < exprs.length ; idx++ ){
-            newExprs[idx] = exprs[idx].reduce(scope);
+            newExprs[idx] = exprs[idx].bind(scope, false);
         }
         return new BlockExpr(newExprs);
     }

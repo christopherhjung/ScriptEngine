@@ -145,9 +145,9 @@ public class InfixExpr implements Expr{
     }
 
     @Override
-    public Expr reduce(Scope scope) {
-        var newLhs = lhs.reduce(scope);
-        var newRhs = rhs.reduce(scope);
+    public Expr bind(Scope scope, boolean define) {
+        var newLhs = lhs.bind(scope, false);
+        var newRhs = rhs.bind(scope, false);
         var newExpr = new InfixExpr(newLhs, newRhs, op);
 
         if(newLhs instanceof LiteralExpr && rhs instanceof LiteralExpr){
