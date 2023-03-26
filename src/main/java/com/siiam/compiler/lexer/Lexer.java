@@ -259,12 +259,15 @@ public class Lexer {
             }
 
             if(accept('.')){
-                if(is('.', 1) && is('.', 2)){
-                    idx+=2;
-                    return token(Token.Kind.Ellipsis);
+                if(!accept('.')){
+                    return token(Token.Kind.Dot);
                 }
 
-                return token(Token.Kind.Dot);
+                if(!accept('.')){
+                    return token(Token.Kind.Range);
+                }
+
+                return token(Token.Kind.Ellipsis);
             }
 
             if(accept(',')){
@@ -309,6 +312,8 @@ public class Lexer {
                     case "and": return token(Token.Kind.And);
                     case "or": return token(Token.Kind.Or);
                     case "let": return token(Token.Kind.Let);
+                    case "for": return token(Token.Kind.For);
+                    case "in": return token(Token.Kind.In);
                 }
 
                 return token(Token.Kind.Ident, value);

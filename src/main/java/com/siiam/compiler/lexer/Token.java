@@ -21,10 +21,11 @@ public class Token {
         Inc, Dec,
         LeftParen, RightParen,
         LeftBrace, RightBrace,
-        Dot, Comma, Semi, Colon,
-        Fn, If, While, Else, Break, Continue, Return,
+        Dot, Range, Ellipsis,
+        Comma, Semi, Colon,
+        Fn, If, While, Else, Break, Continue, Return, For, In,
         Quest, Nullish, Chain, Pow,
-        Arrow, Let, Ellipsis,
+        Arrow, Let,
         EOL, Error
     }
 

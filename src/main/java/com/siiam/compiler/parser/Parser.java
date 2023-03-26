@@ -208,15 +208,11 @@ public class Parser {
         if( op == Op.LeftParen ){
             var tuple = parseTuple();
             if(!accept(Token.Kind.Arrow)){
-                if(tuple.getElems().length == 1){
-                    return tuple.getElems()[0];
-                }
-
                 return tuple;
             }
 
             var body = parseExpr();
-            return new LambdaExpr(tuple.getElems(), body);
+            return new LambdaExpr(tuple, body);
         }else{
             var expr = parseExpr(op.prec().next());
             return new PrefixExpr(expr, op);
@@ -226,7 +222,7 @@ public class Parser {
     private Expr parseInfixExpr(Expr lhs, Op op){
         if(op == Op.Chain){
             if(accept(Token.Kind.LeftParen)){
-                var arg = parseTuple();
+                var arg = TupleExpr.asTuple(parseTuple());
                 return new CallExpr(lhs, arg, true);
             }else{
                 return new FieldExpr(lhs, parseIdent(true), true);
@@ -239,17 +235,28 @@ public class Parser {
         return new InfixExpr(lhs, rhs, op);
     }
 
-    private TupleExpr parseTuple(){
-        var exprs = new ArrayList<Expr>();
-        while(!accept(Token.Kind.RightParen)){
-            if(!exprs.isEmpty()){
-                expect(Token.Kind.Comma);
-            }
+    private Expr parseTuple(){
+        if(!accept(Token.Kind.RightParen)){
             var expr = parseExpr();
-            exprs.add(expr);
+
+            if(accept(Token.Kind.Comma)){
+                if(accept(Token.Kind.RightParen)){
+                    return new TupleExpr(new Expr[]{expr});
+                }else{
+                    var exprs = new ArrayList<Expr>();
+                    exprs.add(expr);
+                    do{
+                        exprs.add(parseExpr());
+                    }while(accept(Token.Kind.Comma));
+                    expect(Token.Kind.RightParen);
+                    return new TupleExpr(exprs.toArray(new Expr[0]));
+                }
+            }
+
+            return expr;
         }
 
-        return new TupleExpr(exprs.toArray(new Expr[0]));
+        return new TupleExpr(new Expr[0]);
     }
 
     private Expr parseIf(){
@@ -275,6 +282,17 @@ public class Parser {
         return new WhileExpr(condition, body, label);
     }
 
+    private Expr parseFor(String label){
+        expect(Token.Kind.For);
+        expect(Token.Kind.LeftParen);
+        var variable = parseExpr();
+        expect(Token.Kind.In);
+        var range = parseExpr();
+        expect(Token.Kind.RightParen);
+        var body = parseBlock();
+        return new ForExpr(variable, range, body, label);
+    }
+
     private Expr parseBlock(){
         expect(Token.Kind.LeftBrace);
         var exprs = new ArrayList<Expr>();
@@ -293,7 +311,7 @@ public class Parser {
         switch (op){
             case LeftParen:
                 var arg = parseTuple();
-                return new CallExpr(lhs, arg);
+                return new CallExpr(lhs, TupleExpr.asTuple(arg));
             case Inc: return new InfixExpr(lhs, new InfixExpr(lhs, new IntExpr(1), Op.Add), Op.Assign);
             case Dec: return new InfixExpr(lhs, new InfixExpr(lhs, new IntExpr(1), Op.Sub), Op.Assign);
         }
@@ -338,6 +356,7 @@ public class Parser {
             }
             case If: return parseIf();
             case While: return parseWhile(label);
+            case For: return parseFor(label);
             case LeftBrace: return parseBlock();
         }
 

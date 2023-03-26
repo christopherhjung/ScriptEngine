@@ -47,4 +47,12 @@ public class TupleExpr implements Expr{
             elem.collect(scope, sink);
         }
     }
+
+    public static TupleExpr asTuple(Expr expr){
+        if(expr instanceof TupleExpr){
+            return (TupleExpr) expr;
+        }else{
+            return new TupleExpr(new Expr[]{expr});
+        }
+    }
 }
