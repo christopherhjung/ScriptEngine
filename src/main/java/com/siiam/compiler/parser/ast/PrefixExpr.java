@@ -5,7 +5,6 @@ import com.siiam.compiler.parser.Op;
 import com.siiam.compiler.scope.Scope;
 import lombok.AllArgsConstructor;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 @AllArgsConstructor
@@ -35,11 +34,11 @@ public class PrefixExpr implements Expr{
     }
 
     @Override
-    public void collect(Scope scope, Consumer<Object> list) {
+    public void collect(Scope scope, Consumer<Object> sink) {
         if(op == Op.Spread){
-            expr.spread(scope, list);
+            expr.spread(scope, sink);
         }else{
-            Expr.super.collect(scope, list);
+            Expr.super.collect(scope, sink);
         }
     }
 }

@@ -310,6 +310,14 @@ public class SimpleParserTest {
         assertArrayEquals(new Object[]{1,2,3,4,5,6,7},  arr);
     }
 
+    @Test
+    public void tupleLetSpread(){
+        var parser = Parser.parse("let (a,b,c) = (1,...(2,3)); (1,b,3)");
+        var arr  = (Object[])parser.eval(new MutualScope(new HashMap<>()));
+        System.out.println(Arrays.deepToString(arr));
+        assertArrayEquals(new Object[]{1,2,3},  arr);
+    }
+
     private Expr id(String name){
         return new IdentExpr(name);
     }
