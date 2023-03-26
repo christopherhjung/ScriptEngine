@@ -4,6 +4,9 @@ fn a(x){
 }
 
 fn b(x){
+    if x > 100 {
+         return a(x - 100)
+    }
     x
 }
 

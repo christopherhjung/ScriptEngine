@@ -17,4 +17,10 @@ public class ReturnExpr implements Expr{
 
         throw new ReturnException(returnValue);
     }
+
+    @Override
+    public Expr bind(Scope scope, boolean define) {
+        var newExpr = expr.bind(scope, define);
+        return new ReturnExpr(newExpr);
+    }
 }
