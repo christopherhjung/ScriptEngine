@@ -41,4 +41,12 @@ public class ForExpr implements Expr{
 
         return null;
     }
+
+    @Override
+    public Expr bind(Scope scope, boolean define) {
+        var newVariable = variable.bind(scope, true);
+        var newRange = range.bind(scope, false);
+        var newBody = body.bind(scope, false);
+        return new ForExpr(newVariable, newRange, newBody, label);
+    }
 }

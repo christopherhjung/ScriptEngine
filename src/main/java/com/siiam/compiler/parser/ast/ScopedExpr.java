@@ -26,6 +26,9 @@ public class ScopedExpr implements Expr{
 
     @Override
     public Expr bind(Scope scope, boolean define) {
+        scope = NestedScope.nest(this.scope, scope);
+        scope = NestedScope.readonly(scope);
+        scope = NestedScope.mutual(scope);
         var newExpr = expr.bind(scope, false);
         return new ScopedExpr(this.scope, newExpr);
     }

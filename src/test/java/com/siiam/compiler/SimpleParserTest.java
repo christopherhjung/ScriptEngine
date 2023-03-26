@@ -65,8 +65,8 @@ public class SimpleParserTest {
 
     @Test
     public void callExpr(){
-        var actualExpr = Parser.parse("test(1, 2 + 3)");
-        var expectedExpr = fn(id("test"), number(1), add(number(2), number(3)));
+        var actualExpr = Parser.parse("test(1, 2 + A)");
+        var expectedExpr = fn(id("test"), number(1), add(number(2), id("A")));
 
         assertIdentical(expectedExpr, actualExpr);
     }

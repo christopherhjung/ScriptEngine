@@ -41,4 +41,10 @@ public class PrefixExpr implements Expr{
             Expr.super.collect(scope, sink);
         }
     }
+
+    @Override
+    public Expr bind(Scope scope, boolean define) {
+        var newExpr = expr.bind(scope, false);
+        return new PrefixExpr(newExpr, op);
+    }
 }

@@ -115,7 +115,7 @@ public class InterpreterTest {
         assertEquals(2, actualExpr.eval(null));
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void controlFlowFibonacci(){
         var actualExpr = Parser.parse(
             "fn fib(a){if(a <= 2){1}else{fib(a-1) + fib(a-2)}}" +
@@ -281,6 +281,15 @@ public class InterpreterTest {
         var value = new Value("hello");
         var expr = Parser.parse("i = 42");
         expr.eval(new MutualScope(Map.of("i", value)));
+        assertEquals(42 ,value.getContent());
+    }
+
+    @Test
+    public void bindValue(){
+        var value = new Value("hello");
+        var expr = Parser.parse("i = 42");
+        expr = expr.bind(new MutualScope(Map.of("i", value)), false);
+        expr.eval(null);
         assertEquals(42 ,value.getContent());
     }
 }

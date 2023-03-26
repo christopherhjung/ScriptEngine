@@ -11,13 +11,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CallExpr implements Expr{
     private final Expr callee;
-    private final TupleExpr arg;
+    private final Expr arg;
     boolean optional = false;
 
     @Override
     public Object eval(Scope scope) {
         var argVal = (Object[])arg.eval(scope);
         return callee.call(scope, argVal, optional);
+    }
+
+    @Override
+    public Expr bind(Scope scope, boolean define) {
+        var newCallee = callee.bind(scope, false);
+        var newArg = arg.bind(scope, false);
+        return new CallExpr(newCallee, newArg, optional);
     }
 }
 
