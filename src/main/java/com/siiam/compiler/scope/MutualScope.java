@@ -14,12 +14,26 @@ public class MutualScope implements Scope {
     }
 
     @Override
-    public boolean setObject(String key, Object value, boolean local) {
-        if(local || map.containsKey(key)){
-            map.put(key, new Value(value));
+    public boolean setObject(String key, Object value, boolean define) {
+        if(define){
+            map.compute(key, (k, v) -> {
+                if(v == null){
+                    v = new Value(value);
+                }else{
+                    v.setContent(value);
+                }
+
+                return v;
+            });
             return true;
         }
 
-        return false;
+        var wrapper = map.get(key);
+        if(wrapper == null){
+            return false;
+        }
+
+        wrapper.setContent(value);
+        return true;
     }
 }

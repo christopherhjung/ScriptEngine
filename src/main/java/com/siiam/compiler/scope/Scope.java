@@ -17,8 +17,8 @@ public interface Scope {
         return setObject(key, value, true);
     }
 
-    default boolean setObject(String key, Object value, boolean local){
-        if(local){
+    default boolean setObject(String key, Object value, boolean define){
+        if(define){
             throw new InterpreterException("Store of " + key + " not supported");
         }
 

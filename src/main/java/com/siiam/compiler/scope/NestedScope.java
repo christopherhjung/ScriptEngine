@@ -22,12 +22,12 @@ public class NestedScope implements Scope {
     }
 
     @Override
-    public boolean setObject(String key, Object value, boolean local) {
+    public boolean setObject(String key, Object value, boolean define) {
         if(parent.setObject(key, value, false)){
             return true;
         }
 
-        return child.setObject(key, value, local);
+        return child.setObject(key, value, define);
     }
 
     public static Scope wrapMutual(Scope parent){

@@ -7,6 +7,7 @@ import com.siiam.compiler.parser.Parser;
 import com.siiam.compiler.parser.ast.*;
 import com.siiam.compiler.scope.MutualScope;
 import com.siiam.compiler.scope.StaticScope;
+import com.siiam.compiler.scope.Value;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
@@ -280,5 +281,13 @@ public class InterpreterTest {
     public void functionPairReturn(){
         var expr = Parser.parse("fn test(){ (40,2) }; let (a,b) = test(); a + b");
         assertEquals(42 ,expr.eval(null));
+    }
+
+    @Test
+    public void assignValue(){
+        var value = new Value("hello");
+        var expr = Parser.parse("i = 42");
+        expr.eval(new MutualScope(Map.of("i", value)));
+        assertEquals(42 ,value.getContent());
     }
 }
