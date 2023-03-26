@@ -23,4 +23,10 @@ public class ScopedExpr implements Expr{
         var nestedScope = NestedScope.nest(scope, this.scope);
         return expr.call(nestedScope, args);
     }
+
+    @Override
+    public Expr reduce(Scope scope) {
+        var newExpr = expr.reduce(scope);
+        return new ScopedExpr(this.scope, newExpr);
+    }
 }

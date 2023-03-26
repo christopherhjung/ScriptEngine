@@ -4,21 +4,20 @@ import com.siiam.compiler.exception.ParseException;
 import com.siiam.compiler.lexer.Lexer;
 import com.siiam.compiler.lexer.Token;
 import com.siiam.compiler.parser.ast.*;
+import com.siiam.compiler.scope.MutualScope;
 import com.siiam.compiler.scope.StaticScope;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Parser {
     private static final int LOOKAHEAD_SIZE = 2;
 
     public static Expr parse(String expr){
-        if(expr == null){
-            return new BooleanExpr(true);
-        }
-
         var lex = new Lexer(expr);
         var parser = new Parser(lex);
-        return parser.parse();
+        var ast = parser.parse();
+        return ast.reduce(new MutualScope(new HashMap<>()));
     }
 
     private Op lastOp;
@@ -196,7 +195,9 @@ public class Parser {
 
         var body = parseBlock();
         var paramArr = params.toArray(new Expr[0]);
-        return new FunctionExpr(name, new TupleExpr(paramArr), body);
+        var raw = new FunctionExpr(name, new TupleExpr(paramArr), body);
+        var reduced = raw.reduce(new MutualScope(new HashMap<>()));
+        return (FunctionExpr)reduced;
     }
 
     private Expr parsePrefixExpr(Op op){
@@ -307,8 +308,8 @@ public class Parser {
             case LeftParen:
                 var arg = parseTuple();
                 return new CallExpr(lhs, TupleExpr.asTuple(arg));
-            case Inc: return new InfixExpr(lhs, new InfixExpr(lhs, new IntExpr(1), Op.Add), Op.Assign);
-            case Dec: return new InfixExpr(lhs, new InfixExpr(lhs, new IntExpr(1), Op.Sub), Op.Assign);
+            case Inc: return new InfixExpr(lhs, new InfixExpr(lhs, new LiteralExpr(1), Op.Add), Op.Assign);
+            case Dec: return new InfixExpr(lhs, new InfixExpr(lhs, new LiteralExpr(1), Op.Sub), Op.Assign);
         }
 
         throw new ParseException("Postfix Expr not yet implemented");
@@ -326,12 +327,12 @@ public class Parser {
                 }
                 return new IdentExpr(sym);
             }
-            case String: return new StringExpr(next().getSymbol());
-            case Boolean:  return new BooleanExpr(Boolean.parseBoolean(next().getSymbol()));
-            case Number: return new IntExpr(Integer.parseInt(next().getSymbol()));
+            case String: return new LiteralExpr(next().getSymbol());
+            case Boolean:  return new LiteralExpr(Boolean.parseBoolean(next().getSymbol()));
+            case Number: return new LiteralExpr(Integer.parseInt(next().getSymbol()));
             case Null: {
                 next();
-                return new NullExpr();
+                return new LiteralExpr(null);
             }
             case Return: {
                 next();

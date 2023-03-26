@@ -13,10 +13,6 @@ public interface Scope {
     }
     Value getValue(String key);
 
-    default boolean setObject(String key, Object value){
-        return setObject(key, value, true);
-    }
-
     default boolean setObject(String key, Object value, boolean define){
         if(define){
             throw new InterpreterException("Store of " + key + " not supported");

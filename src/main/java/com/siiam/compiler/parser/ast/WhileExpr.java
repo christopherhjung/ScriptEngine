@@ -35,4 +35,11 @@ public class WhileExpr implements Expr{
 
         return null;
     }
+
+    @Override
+    public Expr reduce(Scope scope) {
+        var newCondition = condition.reduce(scope);
+        var newBody = body.reduce(scope);
+        return new WhileExpr(newCondition, newBody, label);
+    }
 }

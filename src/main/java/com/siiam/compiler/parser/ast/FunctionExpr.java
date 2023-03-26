@@ -11,7 +11,7 @@ import lombok.Getter;
 @Getter
 public class FunctionExpr implements Expr{
     private String name;
-    private TupleExpr params;
+    private Expr params;
     private Expr body;
 
     @Override
@@ -30,5 +30,12 @@ public class FunctionExpr implements Expr{
     @Override
     public Object eval(Scope scope) {
         return new ScopedExpr(scope, this);
+    }
+
+    @Override
+    public Expr reduce(Scope scope) {
+        var newParams = params.bind(scope);
+        var newBody = body.reduce(scope);
+        return new FunctionExpr(name, newParams, newBody);
     }
 }

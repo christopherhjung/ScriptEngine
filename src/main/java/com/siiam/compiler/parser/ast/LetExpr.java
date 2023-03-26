@@ -1,9 +1,12 @@
 package com.siiam.compiler.parser.ast;
 
+import com.siiam.compiler.parser.Op;
 import com.siiam.compiler.scope.Scope;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
+@Getter
 public class LetExpr implements Expr{
     private final Expr ptrn;
     private final Expr init;
@@ -16,5 +19,11 @@ public class LetExpr implements Expr{
         }
         ptrn.assign(scope, initVal, true);
         return initVal;
+    }
+
+    @Override
+    public Expr reduce(Scope scope) {
+        var newInit = init == null ? null : init.reduce(scope);
+        return new InfixExpr(ptrn.bind(scope), newInit, Op.Assign);
     }
 }

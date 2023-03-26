@@ -143,4 +143,18 @@ public class InfixExpr implements Expr{
 
         throw new InterpreterException("Not implemented " + op + " operation!");
     }
+
+    @Override
+    public Expr reduce(Scope scope) {
+        var newLhs = lhs.reduce(scope);
+        var newRhs = rhs.reduce(scope);
+        var newExpr = new InfixExpr(newLhs, newRhs, op);
+
+        if(newLhs instanceof LiteralExpr && rhs instanceof LiteralExpr){
+            var newValue = newExpr.eval(scope);
+            return new LiteralExpr(newValue);
+        }
+
+        return newExpr;
+    }
 }

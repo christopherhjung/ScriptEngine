@@ -20,4 +20,19 @@ public class IdentExpr implements Expr{
         }
         return obj;
     }
+
+    @Override
+    public Expr reduce(Scope scope) {
+        var value = scope.getValue(key);
+        if(value == null){
+            return this;
+        }
+        return new ValueExpr(value);
+    }
+
+    @Override
+    public Expr bind(Scope scope) {
+        scope.setObject(key, null, true);
+        return reduce(scope);
+    }
 }

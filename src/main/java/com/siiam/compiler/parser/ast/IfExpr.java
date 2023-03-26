@@ -19,4 +19,21 @@ public class IfExpr implements Expr{
 
         return null;
     }
+
+    @Override
+    public Expr reduce(Scope scope) {
+        var newCondition = condition.reduce(scope);
+        var newTrueBranch = trueBranch.reduce(scope);
+        var newFalseBranch = falseBranch == null ? null : falseBranch.reduce(scope);
+
+        if(newCondition instanceof LiteralExpr){
+            if(newCondition.evalBoolean(null)){
+                return newTrueBranch;
+            }else{
+                return newFalseBranch;
+            }
+        }
+
+        return new IfExpr(newCondition, newTrueBranch, newFalseBranch);
+    }
 }

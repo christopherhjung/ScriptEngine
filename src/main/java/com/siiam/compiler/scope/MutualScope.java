@@ -2,11 +2,19 @@ package com.siiam.compiler.scope;
 
 import lombok.AllArgsConstructor;
 
+import java.util.HashMap;
 import java.util.Map;
 
-@AllArgsConstructor
 public class MutualScope implements Scope {
     private final Map<String, Value> map;
+
+    public MutualScope(Map<String, Value> map) {
+        this.map = map;
+    }
+
+    public MutualScope() {
+        this(new HashMap<>());
+    }
 
     @Override
     public Value getValue(String key) {

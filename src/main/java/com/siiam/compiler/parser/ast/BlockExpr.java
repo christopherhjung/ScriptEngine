@@ -19,4 +19,13 @@ public class BlockExpr implements Expr{
         }
         return result;
     }
+
+    @Override
+    public Expr reduce(Scope scope) {
+        var newExprs = new Expr[exprs.length];
+        for( var idx = 0; idx < exprs.length ; idx++ ){
+            newExprs[idx] = exprs[idx].reduce(scope);
+        }
+        return new BlockExpr(newExprs);
+    }
 }

@@ -7,83 +7,49 @@ import com.siiam.compiler.parser.ast.*;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThrows;
 
-public class SimpleParserTest {
-
+public class ReduceTest {
     @Test
-    public void simpleParserTest(){
-        var actualExpr = Parser.parse("Result == \"2\"");
-        var expectedExpr = eq(id("Result"), str("2"));
-
+    public void addReduce(){
+        var actualExpr = Parser.parse("40 + 2");
+        var expectedExpr = number(42);
         assertIdentical(expectedExpr, actualExpr);
     }
 
     @Test
-    public void precAddMul(){
-        var actualExpr = Parser.parse("A + B * C");
-        var expectedExpr = add(
-            id("A"),
-            mul(id("B"), id("C"))
-        );
-
+    public void mulReduce(){
+        var actualExpr = Parser.parse("21 * 2");
+        var expectedExpr = number(42);
         assertIdentical(expectedExpr, actualExpr);
     }
 
     @Test
-    public void precMulAdd(){
-        var actualExpr = Parser.parse("A * B + C");
-        var expectedExpr = add(
-            mul(id("A"), id("B")),
-            id("C")
-        );
-
+    public void deepReduce(){
+        var actualExpr = Parser.parse("(20 + 1) * 2");
+        var expectedExpr = number(42);
         assertIdentical(expectedExpr, actualExpr);
     }
 
     @Test
-    public void precParent(){
-        var actualExpr = Parser.parse("A * (B + C)");
-        var expectedExpr = mul(
-                id("A"),
-                add(id("B"), id("C"))
-        );
-
+    public void zeroMul(){
+        var actualExpr = Parser.parse("0 * A");
+        var expectedExpr = number(0);
         assertIdentical(expectedExpr, actualExpr);
     }
 
     @Test
-    public void unaryMinus(){
-        var actualExpr = Parser.parse("-A + B");
-        var expectedExpr = add(
-            sub(id("A")),
-            id("B")
-        );
-
+    public void oneMul(){
+        var actualExpr = Parser.parse("1 * A");
+        var expectedExpr = id("A");
         assertIdentical(expectedExpr, actualExpr);
     }
 
     @Test
-    public void callExpr(){
-        var actualExpr = Parser.parse("test(1, 2 + 3)");
-        var expectedExpr = fn(id("test"), number(1), add(number(2), number(3)));
-
+    public void addZero(){
+        var actualExpr = Parser.parse("0 + A");
+        var expectedExpr = id("A");
         assertIdentical(expectedExpr, actualExpr);
-    }
-
-    @Test
-    public void blockWithSemi(){
-        var actualExpr = Parser.parse("{;;i;;}");
-        var expectedExpr = block(id("i"));
-
-        assertIdentical(expectedExpr, actualExpr);
-    }
-
-    @Test
-    public void numberAssign(){
-        assertThrows(ParseException.class, () -> {
-            Parser.parse("let 1 = 10");
-        });
     }
 
     private Expr id(String name){

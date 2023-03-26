@@ -4,8 +4,8 @@ import com.siiam.compiler.scope.Scope;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class StringExpr implements Expr{
-    private final String value;
+public class LiteralExpr implements Expr{
+    private final Object value;
     @Override
     public Object eval(Scope scope) {
         return value;

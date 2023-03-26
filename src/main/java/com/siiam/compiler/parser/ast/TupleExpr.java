@@ -48,6 +48,17 @@ public class TupleExpr implements Expr{
         }
     }
 
+    @Override
+    public Expr bind(Scope scope) {
+        var newElems = new Expr[elems.length];
+        var idx = 0;
+        for(var elem : elems){
+            newElems[idx++] = elem.bind(scope);
+        }
+
+        return new TupleExpr(newElems);
+    }
+
     public static TupleExpr asTuple(Expr expr){
         if(expr instanceof TupleExpr){
             return (TupleExpr) expr;

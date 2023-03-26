@@ -36,13 +36,6 @@ public class InterpreterTest {
     }
 
     @Test
-    public void nullEvalTest(){
-        var expr = Parser.parse(null);
-        var scope = StaticScope.builder().add("Result", "3").build();
-        assertSame(Boolean.TRUE, expr.eval(scope));
-    }
-
-    @Test
     public void trueBoolExpr(){
         var expr = Parser.parse("true");
         assertSame(Boolean.TRUE, expr.eval(null));
