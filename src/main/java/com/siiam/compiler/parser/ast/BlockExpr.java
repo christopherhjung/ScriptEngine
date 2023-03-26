@@ -11,7 +11,7 @@ public class BlockExpr implements Expr{
 
     @Override
     public Object eval(Scope scope) {
-        scope = NestedScope.wrapMutual(scope);
+        scope = NestedScope.mutual(scope);
 
         var result = (Object)null;
         for(var expr : exprs){

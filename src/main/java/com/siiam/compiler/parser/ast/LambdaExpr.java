@@ -15,7 +15,7 @@ public class LambdaExpr implements Expr{
 
     @Override
     public Object call(Scope scope, Object[] args) {
-        scope = NestedScope.wrapMutual(scope);
+        scope = NestedScope.mutual(scope);
         param.assign(scope, Utils.flatten(args), true);
 
         try {

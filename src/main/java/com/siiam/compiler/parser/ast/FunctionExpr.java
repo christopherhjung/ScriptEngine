@@ -20,8 +20,8 @@ public class FunctionExpr implements Expr{
             throw new InterpreterException("Mismatch arg length");
         }
 
-        scope = NestedScope.wrapReadonly(scope);
-        scope = NestedScope.wrapMutual(scope);
+        scope = NestedScope.readonly(scope);
+        scope = NestedScope.mutual(scope);
         var idx = 0;
         for(var param : params){
             param.assign(scope, args[idx++], true);

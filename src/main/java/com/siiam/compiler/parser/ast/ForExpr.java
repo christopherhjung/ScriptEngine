@@ -20,7 +20,7 @@ public class ForExpr implements Expr{
     public Object eval(Scope scope) {
         var iterable = Utils.getIterator(range.eval(scope));
 
-        scope = NestedScope.wrapMutual(scope);
+        scope = NestedScope.mutual(scope);
         while(iterable.hasNext()){
             try{
                 var value = iterable.next();

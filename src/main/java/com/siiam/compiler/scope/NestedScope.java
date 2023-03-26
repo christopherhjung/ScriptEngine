@@ -30,11 +30,11 @@ public class NestedScope implements Scope {
         return child.setObject(key, value, define);
     }
 
-    public static Scope wrapMutual(Scope parent){
-        return wrapMutual(parent, new HashMap<>());
+    public static Scope mutual(Scope parent){
+        return mutual(parent, new HashMap<>());
     }
 
-    public static Scope wrapMutual(Scope parent, Map<String, Value> map){
+    public static Scope mutual(Scope parent, Map<String, Value> map){
         Scope child = new MutualScope(map);
         if(parent != null){
             child = new NestedScope(parent, child);
@@ -57,7 +57,7 @@ public class NestedScope implements Scope {
 
 
 
-    public static Scope wrapReadonly(Scope scope){
+    public static Scope readonly(Scope scope){
         return new ReadonlyScope(scope);
     }
 }
