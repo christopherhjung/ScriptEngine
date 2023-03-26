@@ -6,7 +6,6 @@ import com.siiam.compiler.scope.Scope;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.IntStream;
 

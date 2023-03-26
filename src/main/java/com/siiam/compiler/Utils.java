@@ -1,15 +1,10 @@
 package com.siiam.compiler;
 
 import com.siiam.compiler.exception.InterpreterException;
-import com.siiam.compiler.parser.ast.Expr;
-import com.siiam.compiler.parser.controlflow.BreakException;
-import com.siiam.compiler.parser.controlflow.ContinueException;
 import lombok.experimental.UtilityClass;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Objects;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @UtilityClass

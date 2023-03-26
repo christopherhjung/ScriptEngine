@@ -1,8 +1,8 @@
 package com.siiam.compiler.parser.ast;
 
 import com.siiam.compiler.exception.InterpreterException;
-import com.siiam.compiler.scope.Scope;
 import com.siiam.compiler.parser.ObjectFunction;
+import com.siiam.compiler.scope.Scope;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 

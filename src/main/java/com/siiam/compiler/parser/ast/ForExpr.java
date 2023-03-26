@@ -6,7 +6,6 @@ import com.siiam.compiler.parser.controlflow.ContinueException;
 import com.siiam.compiler.scope.NestedScope;
 import com.siiam.compiler.scope.Scope;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.util.Objects;
 

@@ -1,6 +1,5 @@
 package com.siiam.compiler.parser;
 
-import com.siiam.compiler.exception.LexerException;
 import com.siiam.compiler.exception.ParseException;
 import com.siiam.compiler.lexer.Lexer;
 import com.siiam.compiler.lexer.Token;

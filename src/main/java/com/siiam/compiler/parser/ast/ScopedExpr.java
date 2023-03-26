@@ -2,7 +2,6 @@ package com.siiam.compiler.parser.ast;
 
 import com.siiam.compiler.scope.NestedScope;
 import com.siiam.compiler.scope.Scope;
-import com.siiam.compiler.scope.StaticScope;
 
 public class ScopedExpr implements Expr{
     private final Scope scope;
