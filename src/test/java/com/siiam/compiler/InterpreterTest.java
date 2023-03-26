@@ -218,35 +218,35 @@ public class InterpreterTest {
     @Test
     public void spread(){
         var parser = Parser.parse("(1, ...(2,3,4),5)");
-        var arr  = (Object[])parser.eval(new MutualScope(new HashMap<>()));
+        var arr  = (Object[])parser.eval(new MutualScope());
         assertArrayEquals(new Object[]{1,2,3,4,5},  arr);
     }
 
     @Test
     public void spreadVariable(){
         var parser = Parser.parse("let a = (2,3,4); (1, ...a,5)");
-        var arr  = (Object[])parser.eval(new MutualScope(new HashMap<>()));
+        var arr  = (Object[])parser.eval(new MutualScope());
         assertArrayEquals(new Object[]{1,2,3,4,5},  arr);
     }
 
     @Test
     public void spreadNested(){
         var parser = Parser.parse("(1, ...(2,...(3,4,5),6),7)");
-        var arr  = (Object[])parser.eval(new MutualScope(new HashMap<>()));
+        var arr  = (Object[])parser.eval(new MutualScope());
         assertArrayEquals(new Object[]{1,2,3,4,5,6,7},  arr);
     }
 
     @Test
     public void tupleLetSpread(){
         var parser = Parser.parse("let (a,b,c) = (1,...(2,3)); (1,b,3)");
-        var arr  = (Object[])parser.eval(new MutualScope(new HashMap<>()));
+        var arr  = (Object[])parser.eval(new MutualScope());
         assertArrayEquals(new Object[]{1,2,3},  arr);
     }
 
     @Test
     public void singleTupleItem(){
         var parser = Parser.parse("let (a,) = (42,); a");
-        var val  = parser.eval(new MutualScope(new HashMap<>()));
+        var val  = parser.eval(new MutualScope());
         assertEquals(42,  val);
     }
 

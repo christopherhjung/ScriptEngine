@@ -1,10 +1,10 @@
 
-let result = 0
-let range = 0..10
-{
-    for i in range{
-        result += i
-    }
+fn a(x){
+    b(x)
 }
 
-result
+fn b(x){
+    x
+}
+
+a(10)

@@ -10,4 +10,9 @@ public class LiteralExpr implements Expr{
     public Object eval(Scope scope) {
         return value;
     }
+
+    @Override
+    public boolean isConst() {
+        return true;
+    }
 }

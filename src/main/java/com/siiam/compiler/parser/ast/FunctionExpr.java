@@ -1,6 +1,7 @@
 package com.siiam.compiler.parser.ast;
 
 import com.siiam.compiler.parser.controlflow.ReturnException;
+import com.siiam.compiler.scope.MutualScope;
 import com.siiam.compiler.scope.NestedScope;
 import com.siiam.compiler.scope.Scope;
 import lombok.AllArgsConstructor;
@@ -17,8 +18,7 @@ public class FunctionExpr implements Expr{
 
     @Override
     public Object call(Scope scope, Object[] args) {
-        scope = NestedScope.readonly(scope);
-        scope = NestedScope.mutual(scope);
+        scope = new MutualScope();
         params.assign(scope, args, true);
 
         try {
@@ -35,13 +35,18 @@ public class FunctionExpr implements Expr{
 
     @Override
     public Expr bind(Scope scope, boolean define) {
-        var newParams = params.bind(scope, true);
-        var newFunctionExpr = new FunctionExpr(name, newParams, null);
-        scope.setObject(name, newFunctionExpr, true);
-        scope = NestedScope.readonly(scope);
-        scope = NestedScope.mutual(scope);
-        var newBody = body.bind(scope, false);
+        var newFunctionExpr = (FunctionExpr)scope.getObject(name);
+        var fnScope = NestedScope.mutual(scope);
+        var newParams = params.bind(fnScope, true);
+        var newBody = body.bind(fnScope, false);
+        newFunctionExpr.setParams(newParams);
         newFunctionExpr.setBody(newBody);
-        return new FunctionExpr(name, newParams, newBody);
+        return newFunctionExpr;
+    }
+
+    @Override
+    public void bindFunction(Scope scope) {
+        var newFunctionExpr = new FunctionExpr(name, null, null);
+        scope.setObject(name, newFunctionExpr, true);
     }
 }

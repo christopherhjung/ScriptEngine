@@ -2,6 +2,7 @@ package com.siiam.compiler.scope;
 
 import lombok.AllArgsConstructor;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,8 +13,16 @@ public class MutualScope implements Scope {
         this.map = map;
     }
 
+    public MutualScope(Scope global) {
+        this(new HashMap<>());
+    }
     public MutualScope() {
         this(new HashMap<>());
+    }
+
+    @Override
+    public Map<String, Value> values(){
+        return map;
     }
 
     @Override

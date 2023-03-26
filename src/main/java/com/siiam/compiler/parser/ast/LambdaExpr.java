@@ -16,7 +16,7 @@ public class LambdaExpr implements Expr{
     @Override
     public Object call(Scope scope, Object[] args) {
         scope = NestedScope.mutual(scope);
-        param.assign(scope, Utils.flatten(args), true);
+        param.assign(scope, args, true);
 
         try {
             return body.eval(scope);
@@ -28,5 +28,14 @@ public class LambdaExpr implements Expr{
     @Override
     public Object eval(Scope scope) {
         return new ScopedExpr(scope, this);
+    }
+
+    @Override
+    public Expr bind(Scope scope, boolean define) {
+        scope = NestedScope.readonly(scope);
+        scope = NestedScope.mutual(scope);
+        var newParam = param.bind(scope, true);
+        var newBody = param.bind(scope, false);
+        return new LambdaExpr(newParam, newBody);
     }
 }

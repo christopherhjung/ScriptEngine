@@ -22,6 +22,7 @@ public class BlockExpr implements Expr{
 
     @Override
     public Expr bind(Scope scope, boolean define) {
+        scope = NestedScope.mutual(scope);
         var newExprs = new Expr[exprs.length];
         for( var idx = 0; idx < exprs.length ; idx++ ){
             newExprs[idx] = exprs[idx].bind(scope, false);

@@ -53,4 +53,12 @@ public interface Expr {
     default Expr bind(Scope scope, boolean define){
         return this;
     }
+
+    default void bindFunction(Scope scope){
+
+    }
+
+    default boolean isConst(){
+        return false;
+    }
 }

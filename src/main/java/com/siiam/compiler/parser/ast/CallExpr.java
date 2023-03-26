@@ -3,6 +3,7 @@ package com.siiam.compiler.parser.ast;
 import com.siiam.compiler.exception.InterpreterException;
 import com.siiam.compiler.parser.ObjectFunction;
 import com.siiam.compiler.scope.Scope;
+import com.siiam.compiler.scope.Value;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
@@ -22,8 +23,13 @@ public class CallExpr implements Expr{
 
     @Override
     public Expr bind(Scope scope, boolean define) {
-        var newCallee = callee.bind(scope, false);
-        var newArg = arg.bind(scope, false);
+        var newCallee = callee.bind(scope, define);
+        /*if(arg.isConst()){
+            var argVal = arg.eval(scope);
+            var result = newCallee.call(scope, (Object[]) argVal, optional);
+            return new LiteralExpr(result);
+        }*/
+        var newArg = arg.bind(scope, define);
         return new CallExpr(newCallee, newArg, optional);
     }
 }

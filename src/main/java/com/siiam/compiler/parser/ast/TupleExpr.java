@@ -59,6 +59,17 @@ public class TupleExpr implements Expr{
         return new TupleExpr(newElems);
     }
 
+    @Override
+    public boolean isConst() {
+        for(var elem : elems){
+            if(!elem.isConst()){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public static TupleExpr asTuple(Expr expr){
         if(expr instanceof TupleExpr){
             return (TupleExpr) expr;

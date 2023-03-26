@@ -54,9 +54,6 @@ public class NestedScope implements Scope {
         return child;
     }
 
-
-
-
     public static Scope readonly(Scope scope){
         return new ReadonlyScope(scope);
     }

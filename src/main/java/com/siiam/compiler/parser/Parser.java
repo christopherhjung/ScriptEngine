@@ -17,7 +17,9 @@ public class Parser {
         var lex = new Lexer(expr);
         var parser = new Parser(lex);
         var ast = parser.parse();
-        return ast.bind(new MutualScope(new HashMap<>()), false);
+        var bindScope = new MutualScope();
+        ast = ast.bind(bindScope, false);
+        return ast;
     }
 
     private Op lastOp;
@@ -195,9 +197,7 @@ public class Parser {
 
         var body = parseBlock();
         var paramArr = params.toArray(new Expr[0]);
-        var raw = new FunctionExpr(name, new TupleExpr(paramArr), body);
-        var reduced = raw.bind(new MutualScope(new HashMap<>()), false);
-        return (FunctionExpr)reduced;
+        return new FunctionExpr(name, new TupleExpr(paramArr), body);
     }
 
     private Expr parsePrefixExpr(Op op){
@@ -208,7 +208,7 @@ public class Parser {
             }
 
             var body = parseExpr();
-            return new LambdaExpr(tuple, body);
+            return new LambdaExpr(TupleExpr.asTuple(tuple), body);
         }else{
             var expr = parseExpr(op.prec().next());
             return new PrefixExpr(expr, op);
