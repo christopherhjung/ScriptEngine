@@ -24,7 +24,7 @@ public class FunctionExpr implements Expr{
         scope = NestedScope.wrapMutual(scope);
         var idx = 0;
         for(var param : params){
-            param.assign(scope, args[idx++]);
+            param.assign(scope, args[idx++], true);
         }
 
         try {

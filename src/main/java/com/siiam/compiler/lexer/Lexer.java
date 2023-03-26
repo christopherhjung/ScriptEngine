@@ -308,6 +308,7 @@ public class Lexer {
                     case "null": return token(Token.Kind.Null);
                     case "and": return token(Token.Kind.And);
                     case "or": return token(Token.Kind.Or);
+                    case "let": return token(Token.Kind.Let);
                 }
 
                 return token(Token.Kind.Ident, value);

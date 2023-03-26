@@ -4,10 +4,12 @@ import com.siiam.compiler.exception.InterpreterException;
 import com.siiam.compiler.parser.Op;
 import com.siiam.compiler.scope.Scope;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.Objects;
 
 @AllArgsConstructor
+@Getter
 public class InfixExpr implements Expr{
     private Expr lhs;
     private Expr rhs;
@@ -95,7 +97,7 @@ public class InfixExpr implements Expr{
     public Object eval(Scope scope) {
         if (op == Op.Assign) {
             var rhsVal = rhs.eval(scope);
-            return lhs.assign(scope, rhsVal);
+            return lhs.assign(scope, rhsVal, false);
         }
 
         var lhsVal = lhs.eval(scope);

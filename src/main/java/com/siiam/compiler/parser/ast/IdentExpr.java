@@ -14,8 +14,8 @@ public class IdentExpr implements Expr{
     }
 
     @Override
-    public Object assign(Scope scope, Object obj) {
-        if(!scope.setObject(key, obj)){
+    public Object assign(Scope scope, Object obj, boolean define) {
+        if(!scope.setObject(key, obj, define)){
             throw new InterpreterException("Assign was not successful");
         }
         return obj;

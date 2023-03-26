@@ -29,6 +29,6 @@ public class ParserTest {
         var parser = Parser.parse(load("file.siiam"));
         var arr  = (Object[])parser.eval(new MutualScope(new HashMap<>()));
         System.out.println(Arrays.deepToString(arr));
-        assertArrayEquals(new Object[]{1,2},  arr);
+        assertArrayEquals(new Object[]{1,1,2,3,3},  arr);
     }
 }

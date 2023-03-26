@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Consumer;
 
 @AllArgsConstructor
 @Getter
@@ -15,16 +15,14 @@ public class TupleExpr implements Expr{
     @Override
     public Object eval(Scope scope) {
         var list = new ArrayList<>();
-
         for( var elem : elems ){
-            elem.collect(scope, list);
+            elem.collect(scope, list::add);
         }
-
         return list.toArray(Object[]::new);
     }
 
     @Override
-    public void spread(Scope scope, List<Object> list) {
+    public void spread(Scope scope, Consumer<Object> list) {
         for( var elem : elems ){
             elem.collect(scope, list);
         }

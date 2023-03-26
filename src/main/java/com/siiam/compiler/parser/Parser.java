@@ -102,7 +102,7 @@ public class Parser {
 
     public Expr parse(){
         try{
-            var result = parseImpl();
+            var result = parseItem();
             expect(Token.Kind.EOL);
             return result;
         }catch (LexerException | ParseException e){
@@ -122,13 +122,42 @@ public class Parser {
         return null;
     }
 
-    private Expr parseImpl(){
+    private IdentExpr parseIdentExpr(){
+        return new IdentExpr(parseIdent(true));
+    }
+
+    private Expr parsePtrn(){
+        if(accept(Token.Kind.LeftParen)){
+            return parseTuple();
+        }else{
+            return parseIdentExpr();
+        }
+    }
+
+    private Expr parseLetExpr(){
+        expect(Token.Kind.Let);
+        var ptrn = parsePtrn();
+        Expr init = null;
+        if(accept(Token.Kind.Assign)){
+            init = parseExpr();
+        }
+        return new LetExpr(ptrn, init);
+    }
+
+    private Expr parseItem(){
         var functions = new ArrayList<FunctionExpr>();
         var exprs = new ArrayList<Expr>();
-        while(!accept(Token.Kind.EOL)){
+        while(!is(Token.Kind.EOL)){
             switch (peek().getKind()){
-                case Fn: functions.add(parseFunction());
-                //case Let: exprs.add(parseDecl());
+                case Semi: next(); continue;
+                case Fn: {
+                    functions.add(parseFunction());
+                    break;
+                }
+                case Let: {
+                    exprs.add(parseLetExpr());
+                    break;
+                }
                 default:
                     exprs.add(parseExpr());
                     accept(Token.Kind.Semi);
@@ -147,6 +176,17 @@ public class Parser {
         }
     }
 
+    private Expr parseStmt(){
+        while(!is(Token.Kind.EOL)){
+            switch (peek().getKind()){
+                case Let: return parseLetExpr();
+                default: return parseExpr();
+            }
+        }
+
+        throw new ParseException("Expected let or expr");
+    }
+
     private FunctionExpr parseFunction(){
         expect(Token.Kind.Fn);
         var name = parseIdent(true);
@@ -156,8 +196,7 @@ public class Parser {
             if(!params.isEmpty()){
                 expect(Token.Kind.Comma);
             }
-            var param = parseIdent(true);
-            params.add(new IdentExpr(param));
+            params.add(parseIdentExpr());
         }
 
         var body = parseBlock();
@@ -169,6 +208,10 @@ public class Parser {
         if( op == Op.LeftParen ){
             var tuple = parseTuple();
             if(!accept(Token.Kind.Arrow)){
+                if(tuple.getElems().length == 1){
+                    return tuple.getElems()[0];
+                }
+
                 return tuple;
             }
 
@@ -184,7 +227,6 @@ public class Parser {
         if(op == Op.Chain){
             if(accept(Token.Kind.LeftParen)){
                 var arg = parseTuple();
-                expect(Token.Kind.RightParen);
                 return new CallExpr(lhs, arg, true);
             }else{
                 return new FieldExpr(lhs, parseIdent(true), true);
@@ -240,7 +282,7 @@ public class Parser {
             if(!exprs.isEmpty()){
                 expect(Token.Kind.Semi);
             }
-            var expr = parseExpr();
+            var expr = parseStmt();
             exprs.add(expr);
         }
 

@@ -10,13 +10,13 @@ import java.util.Map;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class FieldExpr implements Expr{
-    private final Expr expr;
+    private final Expr objExpr;
     private final String name;
     private boolean optional = false;
 
     @Override
     public Object eval(Scope scope) {
-        var value = expr.eval(scope);
+        var value = objExpr.eval(scope);
 
         if(value == null){
             if(optional) return null;
@@ -39,25 +39,25 @@ public class FieldExpr implements Expr{
     }
 
     @Override
-    public Object assign(Scope scope, Object obj) {
-        var value = expr.eval(scope);
+    public Object assign(Scope scope, Object value, boolean define) {
+        var obj = this.objExpr.eval(scope);
 
-        if(value == null){
+        if(obj == null){
             if(optional) return null;
             throw new InterpreterException("Null pointer exception");
         }
 
-        if( value instanceof Map ){
-            var map = (Map<String, Object>) value;
-            return map.put(name, obj);
+        if( obj instanceof Map ){
+            var map = (Map<String, Object>) obj;
+            return map.put(name, value);
         }
 
-        var valClass = value.getClass();
+        var valClass = obj.getClass();
         try {
             var field = valClass.getDeclaredField(name);
             field.setAccessible(true);
-            field.set(obj, value);
-            return value;
+            field.set(value, obj);
+            return obj;
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new InterpreterException("Expected map or valid object in field expr!", e);
         }

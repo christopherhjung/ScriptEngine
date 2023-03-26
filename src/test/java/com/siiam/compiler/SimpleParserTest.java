@@ -198,7 +198,7 @@ public class SimpleParserTest {
     @Test(timeout = 1000)
     public void controlFlowLoop(){
         var actualExpr = Parser.parse(
-                "fn count(n){i = 1; while(i < n){ i++ }; i}" +
+                "fn count(n){let i = 1; while(i < n){ i++ }; i}" +
                         "count(10)"
         );
         assertEquals(10, actualExpr.eval(null));
@@ -207,7 +207,7 @@ public class SimpleParserTest {
     @Test(timeout = 1000)
     public void controlFlowFibonacciLoop(){
         var actualExpr = Parser.parse(
-                "fn fib(n){i = 1; prev = 0; curr = 1; while(i < n){ next = prev + curr; prev = curr; curr = next;  i++}; curr}" +
+                "fn fib(n){let i = 1; let prev = 0; let curr = 1; while(i < n){ let next = prev + curr; prev = curr; curr = next;  i++}; curr}" +
                         "fib(10)"
         );
         assertEquals(55, actualExpr.eval(null));
@@ -216,8 +216,8 @@ public class SimpleParserTest {
     @Test
     public void readonlyFunctionCall(){
         var actualExpr = Parser.parse(
-                "fn fib(){i = 100}" +
-                        "{i = 42; fib(); i}"
+                "fn fib(){let i = 100}" +
+                        "{let i = 42; fib(); i}"
         );
         assertEquals(42, actualExpr.eval(null));
     }
@@ -296,7 +296,7 @@ public class SimpleParserTest {
 
     @Test
     public void spreadVariable(){
-        var parser = Parser.parse("a = (2,3,4); (1, ...a,5)");
+        var parser = Parser.parse("let a = (2,3,4); (1, ...a,5)");
         var arr  = (Object[])parser.eval(new MutualScope(new HashMap<>()));
         System.out.println(Arrays.deepToString(arr));
         assertArrayEquals(new Object[]{1,2,3,4,5},  arr);

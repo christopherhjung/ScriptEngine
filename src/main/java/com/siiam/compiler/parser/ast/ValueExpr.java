@@ -14,8 +14,8 @@ public class ValueExpr implements Expr{
     }
 
     @Override
-    public Object assign(Scope scope, Object obj) {
-        value.setContent(obj);
-        return obj;
+    public Object assign(Scope scope, Object value, boolean define) {
+        this.value.setContent(value);
+        return value;
     }
 }

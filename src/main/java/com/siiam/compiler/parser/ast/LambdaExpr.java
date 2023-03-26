@@ -22,7 +22,7 @@ public class LambdaExpr implements Expr{
         var idx = 0;
         scope = NestedScope.wrapMutual(scope);
         for(var param : params){
-            param.assign(scope, args[idx++]);
+            param.assign(scope, args[idx++], false);
         }
 
         try {
