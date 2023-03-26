@@ -1,5 +1,6 @@
 package com.siiam.compiler;
 
+import com.siiam.compiler.exception.ParseException;
 import com.siiam.compiler.parser.Op;
 import com.siiam.compiler.parser.Parser;
 import com.siiam.compiler.parser.ast.*;
@@ -21,7 +22,7 @@ public class SimpleParserTest {
     @Test
     public void simpleParserTest(){
         var actualExpr = Parser.parse("Result == \"2\"");
-        var expectedExpr = prog(eq(id("Result"), str("2")));
+        var expectedExpr = eq(id("Result"), str("2"));
 
         assertIdentical(expectedExpr, actualExpr);
     }
@@ -62,10 +63,10 @@ public class SimpleParserTest {
     @Test
     public void precAddMul(){
         var actualExpr = Parser.parse("A + B * C");
-        var expectedExpr = prog(add(
+        var expectedExpr = add(
             id("A"),
             mul(id("B"), id("C"))
-        ));
+        );
 
         assertIdentical(expectedExpr, actualExpr);
     }
@@ -73,10 +74,10 @@ public class SimpleParserTest {
     @Test
     public void precMulAdd(){
         var actualExpr = Parser.parse("A * B + C");
-        var expectedExpr = prog(add(
+        var expectedExpr = add(
             mul(id("A"), id("B")),
             id("C")
-        ));
+        );
 
         assertIdentical(expectedExpr, actualExpr);
     }
@@ -84,10 +85,10 @@ public class SimpleParserTest {
     @Test
     public void precParent(){
         var actualExpr = Parser.parse("A * (B + C)");
-        var expectedExpr = prog(mul(
+        var expectedExpr = mul(
                 id("A"),
                 add(id("B"), id("C"))
-        ));
+        );
 
         assertIdentical(expectedExpr, actualExpr);
     }
@@ -95,10 +96,10 @@ public class SimpleParserTest {
     @Test
     public void unaryMinus(){
         var actualExpr = Parser.parse("-A + B");
-        var expectedExpr = prog(add(
+        var expectedExpr = add(
             sub(id("A")),
             id("B")
-        ));
+        );
 
         assertIdentical(expectedExpr, actualExpr);
     }
@@ -106,7 +107,7 @@ public class SimpleParserTest {
     @Test
     public void callExpr(){
         var actualExpr = Parser.parse("test(1, 2 + 3)");
-        var expectedExpr = prog(fn(id("test"), number(1), add(number(2), number(3))));
+        var expectedExpr = fn(id("test"), number(1), add(number(2), number(3)));
 
         assertIdentical(expectedExpr, actualExpr);
     }
@@ -318,6 +319,14 @@ public class SimpleParserTest {
         assertArrayEquals(new Object[]{1,2,3},  arr);
     }
 
+    @Test
+    public void blockWithSemi(){
+        var actualExpr = Parser.parse("{;;i;;}");
+        var expectedExpr = block(id("i"));
+
+        assertIdentical(expectedExpr, actualExpr);
+    }
+
     private Expr id(String name){
         return new IdentExpr(name);
     }
@@ -350,7 +359,7 @@ public class SimpleParserTest {
         return new CallExpr(callee, new TupleExpr(arg));
     }
 
-    private Expr prog(Expr expr){
+    private Expr block(Expr expr){
         return new BlockExpr(new Expr[]{expr});
     }
 

@@ -101,15 +101,9 @@ public class Parser {
     }
 
     public Expr parse(){
-        try{
-            var result = parseItem();
-            expect(Token.Kind.EOL);
-            return result;
-        }catch (LexerException | ParseException e){
-            e.printStackTrace();
-        }
-
-        return null;
+        var result = parseItem();
+        expect(Token.Kind.EOL);
+        return result;
     }
 
     private String parseIdent(boolean expect){
@@ -164,7 +158,10 @@ public class Parser {
             }
         }
 
-        var expr = new BlockExpr(exprs.toArray(new Expr[0]));
+        var expr = exprs.size() == 1 ?
+                exprs.get(0) :
+                new BlockExpr(exprs.toArray(new Expr[0]));
+
         if(functions.isEmpty()){
             return expr;
         }else{
@@ -253,6 +250,7 @@ public class Parser {
                 }
             }
 
+            expect(Token.Kind.RightParen);
             return expr;
         }
 
@@ -296,12 +294,17 @@ public class Parser {
     private Expr parseBlock(){
         expect(Token.Kind.LeftBrace);
         var exprs = new ArrayList<Expr>();
-        while(!accept(Token.Kind.RightBrace)){
-            if(!exprs.isEmpty()){
-                expect(Token.Kind.Semi);
+        var valid = true;
+        while(true){
+            while(accept(Token.Kind.Semi)){
+                valid = true;
             }
-            var expr = parseStmt();
-            exprs.add(expr);
+            if(accept(Token.Kind.RightBrace)) break;
+            if(!enter(Token.Enter.NL) && !valid){
+                throw new ParseException("Expected newline or semi to separate statements");
+            }
+            exprs.add(parseStmt());
+            valid = false;
         }
 
         return new BlockExpr(exprs.toArray(new Expr[0]));

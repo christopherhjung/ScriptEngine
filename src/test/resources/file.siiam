@@ -1,8 +1,10 @@
 
 let result = 0
-
-for(i in 0..10){
-    result += i
+let range = 0..10
+{
+    for(i in range){
+        result += i
+    }
 }
 
 result
