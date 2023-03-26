@@ -276,9 +276,9 @@ public class InterpreterTest {
         assertEquals(42 ,expr.eval(null));
     }
 
-    private void assertIdentical(Object expected, Object actual){
-        assertThat(actual)
-                .usingRecursiveComparison()
-                .isEqualTo(expected);
+    @Test
+    public void functionPairReturn(){
+        var expr = Parser.parse("fn test(){ (40,2) }; let (a,b) = test(); a + b");
+        assertEquals(42 ,expr.eval(null));
     }
 }
