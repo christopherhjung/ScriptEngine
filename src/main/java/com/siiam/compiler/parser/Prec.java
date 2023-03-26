@@ -3,18 +3,21 @@ package com.siiam.compiler.parser;
 public enum Prec {
     Bottom,
     Assign,
+    Spread,
     Or,
     And,
-    Nullish,
     Rel,
+    Nullish,
     BitOr,
     BitXor,
     BitAnd,
     Shift,
+    Range,
     Add,
     Mul,
     Pow,
-    Unary,
+    Prefix,
+    Postfix,
     Top;
 
     public Prec next(){

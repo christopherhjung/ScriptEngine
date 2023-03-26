@@ -6,7 +6,9 @@ import com.siiam.compiler.scope.Scope;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 @AllArgsConstructor
 @Getter
@@ -93,6 +95,14 @@ public class InfixExpr implements Expr{
         throw new InterpreterException("Expected two Integer for division!");
     }
 
+    private Object range(Object lhs, Object rhs){
+        if(lhs instanceof Integer && rhs instanceof Integer){
+            return IntStream.range((Integer)lhs, (Integer)rhs).boxed();
+        }
+
+        throw new InterpreterException("Expected two Integer for range!");
+    }
+
     @Override
     public Object eval(Scope scope) {
         if (op == Op.Assign) {
@@ -125,6 +135,11 @@ public class InfixExpr implements Expr{
             case BitAnd: return and(lhsVal, rhsVal);
             case BitOr: return or(lhsVal, rhsVal);
             case BitXor: return xor(lhsVal, rhsVal);
+            case Range: return range(lhsVal, rhsVal);
+            case AssignAdd: return lhs.assign(scope, add(lhsVal, rhsVal), false);
+            case AssignSub: return lhs.assign(scope, sub(lhsVal, rhsVal), false);
+            case AssignMul: return lhs.assign(scope, mul(lhsVal, rhsVal), false);
+            case AssignDiv: return lhs.assign(scope, div(lhsVal, rhsVal), false);
         }
 
         throw new InterpreterException("Not implemented " + op + " operation!");

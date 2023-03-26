@@ -192,6 +192,8 @@ public class Lexer {
             if(accept('+')){
                 if(accept('+')){
                     return token(Token.Kind.Inc);
+                }else if(accept('=')){
+                    return token(Token.Kind.AssignPlus);
                 }
                 return token(Token.Kind.Plus);
             }
@@ -201,6 +203,8 @@ public class Lexer {
                     return token(Token.Kind.Dec);
                 }else if(accept('>')){
                     return token(Token.Kind.Arrow);
+                }else if(accept('=')){
+                    return token(Token.Kind.AssignMinus);
                 }
                 return token(Token.Kind.Minus);
             }
@@ -208,6 +212,8 @@ public class Lexer {
             if(accept('*')){
                 if(accept('*')){
                     return token(Token.Kind.Pow);
+                }else if(accept('=')){
+                    return token(Token.Kind.AssignStar);
                 }
 
                 return token(Token.Kind.Star);
@@ -215,6 +221,10 @@ public class Lexer {
 
 
             if( accept('/') ){
+                if(accept('=')){
+                    return token(Token.Kind.AssignSlash);
+                }
+
                 if(accept('*') ){ // arbitrary comment
                     var depth = 1;
                     while(true) {

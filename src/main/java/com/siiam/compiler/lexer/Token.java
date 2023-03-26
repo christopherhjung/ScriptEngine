@@ -12,7 +12,7 @@ public class Token {
 
     public enum Kind{
         Ident, String, Boolean, Number, Null,
-        Assign,
+        Assign, AssignPlus, AssignMinus, AssignStar, AssignSlash,
         Eq, Ne,
         Lt, Le, Gt, Ge,
         Not, And, Or,

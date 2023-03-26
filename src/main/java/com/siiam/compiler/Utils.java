@@ -9,6 +9,8 @@ import lombok.experimental.UtilityClass;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @UtilityClass
 public class Utils {
@@ -17,6 +19,8 @@ public class Utils {
             return Arrays.stream((Object[])obj).iterator();
         }else if(obj instanceof Iterable<?>){
             return (Iterator<Object>) obj;
+        }else if(obj instanceof Stream<?>){
+            return ((Stream<Object>)obj).iterator();
         }
 
         throw new InterpreterException("Value not iterable");

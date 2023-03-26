@@ -431,6 +431,10 @@ public class Parser {
             case Or: return Op.Or;
             case LeftParen: return Op.LeftParen;
             case Assign: return Op.Assign;
+            case AssignMinus: return Op.AssignSub;
+            case AssignPlus: return Op.AssignAdd;
+            case AssignStar: return Op.AssignMul;
+            case AssignSlash: return Op.AssignDiv;
             case Nullish: return Op.Nullish;
             case Chain: return Op.Chain;
             case Pow: return Op.Pow;
@@ -440,6 +444,7 @@ public class Parser {
             case BitXor: return Op.BitXor;
             case Dec: return Op.Dec;
             case Inc: return Op.Inc;
+            case Range: return Op.Range;
             case Ellipsis: return Op.Spread;
             default: return null;
         }

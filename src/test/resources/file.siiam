@@ -1,9 +1,8 @@
 
-let tup = (33,55)
 let result = 0
 
-for(i in tup){
-    result = result + i
+for(i in 0..10){
+    result += i
 }
 
 result
