@@ -54,10 +54,6 @@ public interface Expr {
         return this;
     }
 
-    default void bindFunction(Scope scope){
-
-    }
-
     default boolean isConst(){
         return false;
     }

@@ -20,9 +20,13 @@ public class MutualScope implements Scope {
         this(new HashMap<>());
     }
 
+    public StaticScope toStatic(){
+        return new StaticScope(new HashMap<>(map));
+    }
+
     @Override
-    public Map<String, Value> values(){
-        return map;
+    public Collection<Value> values(){
+        return map.values();
     }
 
     @Override

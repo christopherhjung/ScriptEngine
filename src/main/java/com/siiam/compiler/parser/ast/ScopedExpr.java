@@ -31,16 +31,15 @@ public class ScopedExpr implements Expr{
         scope = NestedScope.readonly(scope);
         var collector = new MutualScope();
         scope = NestedScope.nest(scope, collector);
-        for( var entry : this.scope.values().entrySet()  ){
-            var content = entry.getValue().getContent();
+        for( var value :  this.scope.values() ){
+            var content = value.getContent();
             if(content instanceof FunctionExpr){
                 var funcExpr = (FunctionExpr) content;
                 funcExpr.bindFunction(scope);
             }
         }
 
-        for( var entry : this.scope.values().entrySet()  ){
-            var value = entry.getValue();
+        for( var value : this.scope.values()  ){
             var content = value.getContent();
             if(content instanceof FunctionExpr){
                 var funcExpr = (FunctionExpr) content;
@@ -48,8 +47,8 @@ public class ScopedExpr implements Expr{
             }
         }
 
-        var newScope = new StaticScope(collector.values());
-        var newExpr = expr.bind(scope, define);
+        var newScope = collector.toStatic();
+        var newExpr = expr.bind(newScope, define);
         return new ScopedExpr(newScope, newExpr);
     }
 }

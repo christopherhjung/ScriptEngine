@@ -44,7 +44,6 @@ public class FunctionExpr implements Expr{
         return newFunctionExpr;
     }
 
-    @Override
     public void bindFunction(Scope scope) {
         var newFunctionExpr = new FunctionExpr(name, null, null);
         scope.setObject(name, newFunctionExpr, true);

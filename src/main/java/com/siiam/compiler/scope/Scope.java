@@ -16,8 +16,8 @@ public interface Scope {
         return value.getContent();
     }
     Value getValue(String key);
-    default Map<String, Value> values(){
-        return Collections.emptyMap();
+    default Collection<Value> values(){
+        return Collections.emptyList();
     }
 
     default boolean setObject(String key, Object value, boolean define){

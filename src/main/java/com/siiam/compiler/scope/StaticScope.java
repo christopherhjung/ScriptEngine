@@ -25,8 +25,8 @@ public class StaticScope implements Scope {
     }
 
     @Override
-    public Map<String, Value> values(){
-        return map;
+    public Collection<Value> values(){
+        return map.values();
     }
 
     public static Builder builder(){
