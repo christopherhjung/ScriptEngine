@@ -153,7 +153,6 @@ public class Parser {
                 }
                 default:
                     exprs.add(parseExpr());
-                    accept(Token.Kind.Semi);
             }
         }
 
