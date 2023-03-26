@@ -258,9 +258,7 @@ public class Parser {
 
     private Expr parseIf(){
         expect(Token.Kind.If);
-        expect(Token.Kind.LeftParen);
         var condition = parseExpr();
-        expect(Token.Kind.RightParen);
         var trueBranch = parseBlock();
         var falseBranch = (Expr)null;
         if(accept(Token.Kind.Else)){
@@ -272,20 +270,16 @@ public class Parser {
 
     private Expr parseWhile(String label){
         expect(Token.Kind.While);
-        expect(Token.Kind.LeftParen);
         var condition = parseExpr();
-        expect(Token.Kind.RightParen);
         var body = parseBlock();
         return new WhileExpr(condition, body, label);
     }
 
     private Expr parseFor(String label){
         expect(Token.Kind.For);
-        expect(Token.Kind.LeftParen);
         var variable = parseExpr();
         expect(Token.Kind.In);
         var range = parseExpr();
-        expect(Token.Kind.RightParen);
         var body = parseBlock();
         return new ForExpr(variable, range, body, label);
     }

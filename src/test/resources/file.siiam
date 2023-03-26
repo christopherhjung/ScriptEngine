@@ -2,7 +2,7 @@
 let result = 0
 let range = 0..10
 {
-    for(i in range){
+    for i in range{
         result += i
     }
 }

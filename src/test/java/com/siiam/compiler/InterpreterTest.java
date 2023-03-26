@@ -266,13 +266,13 @@ public class InterpreterTest {
 
     @Test
     public void breakForLoop(){
-        var expr = Parser.parse("let a = 0; for(i in 42..100){ a = i; break }; a");
+        var expr = Parser.parse("let a = 0; for i in 42..100 { a = i; break }; a");
         assertEquals(42 ,expr.eval(null));
     }
 
     @Test
     public void breakWhileLoop(){
-        var expr = Parser.parse("let a = 41; while(a < 100){ a++; break }; a");
+        var expr = Parser.parse("let a = 41; while a < 100 { a++; break }; a");
         assertEquals(42 ,expr.eval(null));
     }
 
