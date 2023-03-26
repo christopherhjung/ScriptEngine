@@ -292,4 +292,18 @@ public class InterpreterTest {
         expr.eval(null);
         assertEquals(42 ,value.getContent());
     }
+
+    @Test
+    public void functional(){
+        var expr = Parser.parse("let add = (x) -> (y) -> x + y; add(40)(2)");
+        var result = expr.eval(new MutualScope());
+        assertEquals(42 ,result);
+    }
+
+    @Test
+    public void order(){
+        var expr = Parser.parse("let i = 1; let add = (x) -> {i++; (y) -> x + y}; add(40)(i)");
+        var result = expr.eval(new MutualScope());
+        assertEquals(42 ,result);
+    }
 }

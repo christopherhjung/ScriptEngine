@@ -35,7 +35,7 @@ public class LambdaExpr implements Expr{
         scope = NestedScope.readonly(scope);
         scope = NestedScope.mutual(scope);
         var newParam = param.bind(scope, true);
-        var newBody = param.bind(scope, false);
+        var newBody = body.bind(scope, false);
         return new LambdaExpr(newParam, newBody);
     }
 }

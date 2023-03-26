@@ -31,7 +31,7 @@ public interface Expr {
             return fn.call(args);
         }
 
-        throw new InterpreterException("Expr is not callable ");
+        throw new InterpreterException("is not callable!");
     }
 
     default Object assign(Scope scope, Object obj, boolean define){

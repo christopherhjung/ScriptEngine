@@ -8,12 +8,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Value {
-    //private Value old;
     private Object content;
-
-    /*
-    public void push(Object obj){
-        old = new Value(old, content);
-        content = obj;
-    }*/
 }

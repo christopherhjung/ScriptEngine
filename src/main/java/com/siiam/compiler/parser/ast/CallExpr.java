@@ -13,12 +13,27 @@ import lombok.RequiredArgsConstructor;
 public class CallExpr implements Expr{
     private final Expr callee;
     private final Expr arg;
-    boolean optional = false;
+    private boolean optional = false;
 
     @Override
     public Object eval(Scope scope) {
-        var argVal = (Object[])arg.eval(scope);
-        return callee.call(scope, argVal, optional);
+        var callee = this.callee.eval(scope);
+
+        if(callee == null){
+            if(optional) return null;
+            throw new InterpreterException("Null pointer exception");
+        }
+
+        var arg = (Object[]) this.arg.eval(scope);
+        if(callee instanceof Expr){
+            var expr = (Expr) callee;
+            return expr.call(scope, arg);
+        }else if(callee instanceof ObjectFunction){
+            var fn = (ObjectFunction) callee;
+            return fn.call(arg);
+        }
+
+        throw new InterpreterException("is not callable!");
     }
 
     @Override
