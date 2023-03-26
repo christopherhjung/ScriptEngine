@@ -87,6 +87,13 @@ public class SimpleParserTest {
         assertIdentical(expectedExpr, actualExpr);
     }
 
+    @Test
+    public void numberAssign(){
+        assertThrows(ParseException.class, () -> {
+            Parser.parse("let 1 = 10");
+        });
+    }
+
     private Expr id(String name){
         return new IdentExpr(name);
     }

@@ -1,5 +1,7 @@
 package com.siiam.compiler;
 
+import com.siiam.compiler.exception.InterpreterException;
+import com.siiam.compiler.exception.ParseException;
 import com.siiam.compiler.parser.Op;
 import com.siiam.compiler.parser.Parser;
 import com.siiam.compiler.parser.ast.*;
@@ -223,7 +225,6 @@ public class InterpreterTest {
     public void spread(){
         var parser = Parser.parse("(1, ...(2,3,4),5)");
         var arr  = (Object[])parser.eval(new MutualScope(new HashMap<>()));
-        System.out.println(Arrays.deepToString(arr));
         assertArrayEquals(new Object[]{1,2,3,4,5},  arr);
     }
 
@@ -231,7 +232,6 @@ public class InterpreterTest {
     public void spreadVariable(){
         var parser = Parser.parse("let a = (2,3,4); (1, ...a,5)");
         var arr  = (Object[])parser.eval(new MutualScope(new HashMap<>()));
-        System.out.println(Arrays.deepToString(arr));
         assertArrayEquals(new Object[]{1,2,3,4,5},  arr);
     }
 
@@ -239,7 +239,6 @@ public class InterpreterTest {
     public void spreadNested(){
         var parser = Parser.parse("(1, ...(2,...(3,4,5),6),7)");
         var arr  = (Object[])parser.eval(new MutualScope(new HashMap<>()));
-        System.out.println(Arrays.deepToString(arr));
         assertArrayEquals(new Object[]{1,2,3,4,5,6,7},  arr);
     }
 
@@ -247,8 +246,22 @@ public class InterpreterTest {
     public void tupleLetSpread(){
         var parser = Parser.parse("let (a,b,c) = (1,...(2,3)); (1,b,3)");
         var arr  = (Object[])parser.eval(new MutualScope(new HashMap<>()));
-        System.out.println(Arrays.deepToString(arr));
         assertArrayEquals(new Object[]{1,2,3},  arr);
+    }
+
+    @Test
+    public void singleTupleItem(){
+        var parser = Parser.parse("let (a,) = (42,); a");
+        var val  = parser.eval(new MutualScope(new HashMap<>()));
+        assertEquals(42,  val);
+    }
+
+    @Test
+    public void numberAssign(){
+        assertThrows(InterpreterException.class, () -> {
+            var expr = Parser.parse("let (1,) = (10,)");
+            expr.eval(null);
+        });
     }
 
     private void assertIdentical(Object expected, Object actual){
