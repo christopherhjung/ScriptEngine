@@ -11,21 +11,14 @@ import lombok.Getter;
 @Getter
 public class FunctionExpr implements Expr{
     private String name;
-    private Expr[] params;
+    private TupleExpr params;
     private Expr body;
 
     @Override
     public Object call(Scope scope, Object[] args) {
-        if(args.length != params.length){
-            throw new InterpreterException("Mismatch arg length");
-        }
-
         scope = NestedScope.readonly(scope);
         scope = NestedScope.mutual(scope);
-        var idx = 0;
-        for(var param : params){
-            param.assign(scope, args[idx++], true);
-        }
+        params.assign(scope, args, true);
 
         try {
             return body.eval(scope);

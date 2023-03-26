@@ -197,7 +197,7 @@ public class Parser {
 
         var body = parseBlock();
         var paramArr = params.toArray(new Expr[0]);
-        return new FunctionExpr(name, paramArr, body);
+        return new FunctionExpr(name, new TupleExpr(paramArr), body);
     }
 
     private Expr parsePrefixExpr(Op op){
