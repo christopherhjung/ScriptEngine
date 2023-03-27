@@ -7,7 +7,7 @@ public class ReadonlyScope implements Scope {
     private Scope scope;
 
     @Override
-    public Value getValue(String key) {
+    public Slot getValue(String key) {
         return scope.getValue(key);
     }
 }

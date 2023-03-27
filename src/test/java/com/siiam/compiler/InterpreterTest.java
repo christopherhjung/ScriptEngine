@@ -1,18 +1,13 @@
 package com.siiam.compiler;
 
 import com.siiam.compiler.exception.InterpreterException;
-import com.siiam.compiler.exception.ParseException;
-import com.siiam.compiler.parser.Op;
 import com.siiam.compiler.parser.Parser;
-import com.siiam.compiler.parser.ast.*;
 import com.siiam.compiler.scope.MutualScope;
 import com.siiam.compiler.scope.StaticScope;
-import com.siiam.compiler.scope.Value;
+import com.siiam.compiler.scope.Slot;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -296,19 +291,19 @@ public class InterpreterTest {
 
     @Test
     public void assignValue(){
-        var value = new Value("hello");
+        var value = new Slot("hello");
         var expr = Parser.parse("i = 42");
         expr.eval(new MutualScope(Map.of("i", value)));
-        assertEquals(42 ,value.getContent());
+        assertEquals(42 ,value.getValue());
     }
 
     @Test
     public void bindValue(){
-        var value = new Value("hello");
+        var value = new Slot("hello");
         var expr = Parser.parse("i = 42");
         expr = expr.bind(new MutualScope(Map.of("i", value)), false);
         expr.eval(null);
-        assertEquals(42 ,value.getContent());
+        assertEquals(42 ,value.getValue());
     }
 
     @Test

@@ -1,15 +1,13 @@
 package com.siiam.compiler.scope;
 
-import lombok.AllArgsConstructor;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MutualScope implements Scope {
-    private final Map<String, Value> map;
+    private final Map<String, Slot> map;
 
-    public MutualScope(Map<String, Value> map) {
+    public MutualScope(Map<String, Slot> map) {
         this.map = map;
     }
 
@@ -25,12 +23,12 @@ public class MutualScope implements Scope {
     }
 
     @Override
-    public Collection<Value> values(){
+    public Collection<Slot> values(){
         return map.values();
     }
 
     @Override
-    public Value getValue(String key) {
+    public Slot getValue(String key) {
         return map.get(key);
     }
 
@@ -39,13 +37,13 @@ public class MutualScope implements Scope {
         var wrapper = map.get(key);
         if(wrapper == null){
             if(define){
-                wrapper = new Value(value);
+                wrapper = new Slot(value);
                 map.put(key, wrapper);
                 return true;
             }else return false;
         }
 
-        wrapper.setContent(value);
+        wrapper.setValue(value);
         return true;
     }
 }

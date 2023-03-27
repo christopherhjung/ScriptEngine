@@ -17,15 +17,15 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class StaticScope implements Scope {
-    private final Map<String, Value> map;
+    private final Map<String, Slot> map;
 
     @Override
-    public Value getValue(String key) {
+    public Slot getValue(String key) {
         return map.get(key);
     }
 
     @Override
-    public Collection<Value> values(){
+    public Collection<Slot> values(){
         return map.values();
     }
 
@@ -35,11 +35,11 @@ public class StaticScope implements Scope {
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Builder{
-        Map<String, Value> map = new HashMap<>();
+        Map<String, Slot> map = new HashMap<>();
 
         public Builder add(String key, Object value){
             assert !map.containsKey(key);
-            map.put(key, new Value(value));
+            map.put(key, new Slot(value));
             return this;
         }
 

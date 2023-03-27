@@ -11,7 +11,7 @@ public class NestedScope implements Scope {
     private final Scope child;
 
     @Override
-    public Value getValue(String key) {
+    public Slot getValue(String key) {
         var value = child.getValue(key);
 
         if(value != null){
@@ -34,7 +34,7 @@ public class NestedScope implements Scope {
         return mutual(parent, new HashMap<>());
     }
 
-    public static Scope mutual(Scope parent, Map<String, Value> map){
+    public static Scope mutual(Scope parent, Map<String, Slot> map){
         Scope child = new MutualScope(map);
         if(parent != null){
             child = new NestedScope(parent, child);

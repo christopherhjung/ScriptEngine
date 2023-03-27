@@ -7,6 +7,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Value {
-    private Object content;
+public class Slot {
+    private Object value;
 }

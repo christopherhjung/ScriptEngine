@@ -19,7 +19,7 @@ public class Main {
         long start = System.currentTimeMillis();
         var val = fib.call(null, new Object[]{n});
         long end = System.currentTimeMillis();
-        System.out.printf("Time siiam: %d with value %d\n",end - start, val);
+        System.out.printf("Time siiam: %d with value %d\n" ,end - start, val);
     }
 
     public static void runForLoop(int n){
@@ -35,7 +35,7 @@ public class Main {
 
     public static void runTuple(int n){
         var fib = Parser.parse(
-                "fn fib(n){let (i, prev, curr) = (1,0,1); while(i < n){ (prev, curr) = (curr, prev + curr);  i++}; curr}" +
+                "fn fib(n){let (prev, curr) = (0,1); for i in 1..n { (prev, curr) = (curr, prev + curr)}; curr}" +
                         "fib"
         );
         long start = System.currentTimeMillis();

@@ -2,8 +2,6 @@ package com.siiam.compiler.parser.ast;
 
 import com.siiam.compiler.scope.*;
 
-import java.util.HashMap;
-
 public class ScopedExpr implements Expr{
     private final Scope scope;
     private final Expr expr;
@@ -32,7 +30,7 @@ public class ScopedExpr implements Expr{
         var collector = new MutualScope();
         scope = NestedScope.nest(scope, collector);
         for( var value :  this.scope.values() ){
-            var content = value.getContent();
+            var content = value.getValue();
             if(content instanceof FunctionExpr){
                 var funcExpr = (FunctionExpr) content;
                 funcExpr.bindFunction(scope);
@@ -40,7 +38,7 @@ public class ScopedExpr implements Expr{
         }
 
         for( var value : this.scope.values()  ){
-            var content = value.getContent();
+            var content = value.getValue();
             if(content instanceof FunctionExpr){
                 var funcExpr = (FunctionExpr) content;
                 funcExpr.bind(scope, false);

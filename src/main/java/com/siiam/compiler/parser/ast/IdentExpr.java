@@ -31,11 +31,11 @@ public class IdentExpr implements Expr{
         if(value == null){
             return this;
         }
-        var content = value.getContent();
+        var content = value.getValue();
         if(content instanceof FunctionExpr){
             return new LiteralExpr(content);
         }
 
-        return new ValueExpr(value);
+        return new RefExpr(value);
     }
 }

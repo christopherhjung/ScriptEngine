@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class EmptyScope implements Scope {
     @Override
-    public Value getValue(String key) {
+    public Slot getValue(String key) {
         return null;
     }
 

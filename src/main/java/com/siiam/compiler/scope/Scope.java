@@ -4,7 +4,6 @@ import com.siiam.compiler.exception.InterpreterException;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 
 public interface Scope {
     default Object getObject(String key){
@@ -13,10 +12,10 @@ public interface Scope {
             throw new InterpreterException("Expected value of " + key);
         }
 
-        return value.getContent();
+        return value.getValue();
     }
-    Value getValue(String key);
-    default Collection<Value> values(){
+    Slot getValue(String key);
+    default Collection<Slot> values(){
         return Collections.emptyList();
     }
 
