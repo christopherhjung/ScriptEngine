@@ -14,24 +14,8 @@ public interface Expr {
         return call(scope, args, false);
     }
     default Object call(Scope scope, Object[] args, boolean optional){
-        var callee = eval(scope);
-
-        if(callee == null){
-            if(optional) return null;
-            throw new InterpreterException("Null pointer exception");
-        }
-
-        if(callee instanceof Expr){
-            var expr = (Expr) callee;
-            return expr.call(scope, args);
-        }
-
-        if(callee instanceof ObjectFunction){
-            var fn = (ObjectFunction) callee;
-            return fn.call(args);
-        }
-
-        throw new InterpreterException("is not callable!");
+        return new CallExpr(this, new LiteralExpr(args), optional)
+                .eval(scope);
     }
 
     default Object assign(Scope scope, Object obj, boolean define){
