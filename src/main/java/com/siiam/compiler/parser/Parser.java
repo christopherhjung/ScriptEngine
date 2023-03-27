@@ -308,8 +308,8 @@ public class Parser {
             case LeftParen:
                 var arg = parseTuple();
                 return new CallExpr(lhs, TupleExpr.asTuple(arg));
-            case Inc: return new InfixExpr(lhs, new InfixExpr(lhs, new LiteralExpr(1), Op.Add), Op.Assign);
-            case Dec: return new InfixExpr(lhs, new InfixExpr(lhs, new LiteralExpr(1), Op.Sub), Op.Assign);
+            case Inc:
+            case Dec: return new PostfixExpr(lhs, op);
         }
 
         throw new ParseException("Postfix Expr not yet implemented");

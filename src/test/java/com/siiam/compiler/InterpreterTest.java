@@ -259,8 +259,26 @@ public class InterpreterTest {
     }
 
     @Test
+    public void forLoopCount(){
+        var expr = Parser.parse("let n = 0; for i in 0..42 { n++ }; n");
+        assertEquals(42 ,expr.eval(null));
+    }
+
+    @Test
+    public void tupleCount(){
+        var expr = Parser.parse("let dot = 0; for (a, b) in ((5, 4), (11, 2)) { dot += a * b }; dot");
+        assertEquals(42 ,expr.eval(null));
+    }
+
+    @Test
+    public void tupleForEachSpread(){
+        var expr = Parser.parse("let dot = 0; for a in (...(5, 4), ...(11, 1)) { dot += a * 2 }; dot");
+        assertEquals(42 ,expr.eval(null));
+    }
+
+    @Test
     public void breakForLoop(){
-        var expr = Parser.parse("let a = 0; for i in 42..100 { a = i; break }; a");
+        var expr = Parser.parse("let a = 0; for i in 23 .. 100 { a = i; if a == 42 {break} }; a");
         assertEquals(42 ,expr.eval(null));
     }
 
@@ -303,6 +321,13 @@ public class InterpreterTest {
     @Test
     public void order(){
         var expr = Parser.parse("let i = 1; let add = (x) -> {i++; (y) -> x + y}; add(40)(i)");
+        var result = expr.eval(new MutualScope());
+        assertEquals(42 ,result);
+    }
+
+    @Test
+    public void postIncrement(){
+        var expr = Parser.parse("let i = 42; i++");
         var result = expr.eval(new MutualScope());
         assertEquals(42 ,result);
     }
