@@ -2,6 +2,7 @@ package com.siiam.compiler.parser.ast;
 
 import com.siiam.compiler.exception.InterpreterException;
 import com.siiam.compiler.parser.Op;
+import com.siiam.compiler.scope.Range;
 import com.siiam.compiler.scope.Scope;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -96,7 +97,7 @@ public class InfixExpr implements Expr{
 
     private Object range(Object lhs, Object rhs){
         if(lhs instanceof Integer && rhs instanceof Integer){
-            return IntStream.range((Integer)lhs, (Integer)rhs).boxed();
+            return new Range((Integer)lhs, (Integer)rhs);
         }
 
         throw new InterpreterException("Expected two Integer for range!");

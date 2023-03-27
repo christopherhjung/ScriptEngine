@@ -9,13 +9,13 @@ import java.util.stream.Stream;
 
 @UtilityClass
 public class Utils {
-    public static Iterator<Object> getIterator(Object obj){
+    public static Iterator<?> getIterator(Object obj){
         if(obj instanceof Object[]){
             return Arrays.stream((Object[])obj).iterator();
         }else if(obj instanceof Iterable<?>){
-            return (Iterator<Object>) obj;
+            return ((Iterable<?>) obj).iterator();
         }else if(obj instanceof Stream<?>){
-            return ((Stream<Object>)obj).iterator();
+            return ((Stream<?>)obj).iterator();
         }
 
         throw new InterpreterException("Value not iterable");
